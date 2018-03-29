@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using CryptLink.HashFramework;
+using CryptLink.SigningFramework;
 
 namespace CryptLinkTests {
 	[TestFixture()]

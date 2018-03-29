@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CryptLink.HashFramework {
+namespace CryptLink.SigningFramework {
     /// <summary>
     /// The abstract class that enables easy to use hashing and hashed based comparison
     /// </summary>

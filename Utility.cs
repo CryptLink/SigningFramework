@@ -2,7 +2,7 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
-namespace CryptLink.HashFramework {
+namespace CryptLink.SigningFramework {
     public class Utility {
 
         public static string EncodeBytes(byte[] Bytes) {

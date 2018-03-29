@@ -1,4 +1,4 @@
-﻿namespace CryptLink.HashFramework {
+﻿namespace CryptLink.SigningFramework {
 
     /// <summary>
     /// A minimal class for implementing ComparableBytesAbstract. Lowest level type for storing bytes that need to be compared and sorted.

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
-using static CryptLink.HashFramework.Hash;
+using static CryptLink.SigningFramework.Hash;
 
-namespace CryptLink.HashFramework {
+namespace CryptLink.SigningFramework {
 
     /// <summary>
     /// A immutable string that can easily be hashed

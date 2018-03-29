@@ -1,4 +1,4 @@
-﻿namespace CryptLink.HashFramework {
+﻿namespace CryptLink.SigningFramework {
     public interface IHashable {
         /// <summary>
         /// A byte array of data to be hashed

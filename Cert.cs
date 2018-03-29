@@ -3,9 +3,9 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security;
 using System.Runtime.Serialization;
-using static CryptLink.HashFramework.Hash;
+using static CryptLink.SigningFramework.Hash;
 
-namespace CryptLink.HashFramework {
+namespace CryptLink.SigningFramework {
 
     /// <summary>
     /// A wrapper for x509Certificate2 that provides easy signing, saving and loading

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CryptLink.HashFramework {
+namespace CryptLink.SigningFramework {
 
     /// <summary>
     /// A comparable (and sortable) byte[]
