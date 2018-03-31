@@ -12,7 +12,7 @@ namespace CryptLinkTests {
         Cert signingCert2; //contains the public and private key
         Cert verifyCert2; //contains only the public key
 
-        [TestFixtureSetUp]
+        [SetUp]
         public void Setup_GenerateCert() {
             //signingCert1 = new CertBuilder { SubjectName = "CN=Test CA1", KeyStrength = 1024 }.BuildCert();
             //signingCert2 = new CertBuilder { SubjectName = "CN=Test CA2", KeyStrength = 1024 }.BuildCert();
@@ -24,14 +24,16 @@ namespace CryptLinkTests {
             Assert.True(signingCert2.HasPrivateKey);
             Assert.False(verifyCert1.HasPrivateKey);
             Assert.False(verifyCert2.HasPrivateKey);
-
         }
 
         [Test]
         public void SigningTests() {
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
-                var signed1 = new HashableString("Test", provider, signingCert1);
-                var signed2 = new HashableString("Test", provider, signingCert2);
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
+                var signed1 = new HashableString("Test");
+                signed1.ComputeHash(provider, signingCert1);
+
+                var signed2 = new HashableString("Test");
+                signed2.ComputeHash(provider, signingCert2);
 
                 Assert.AreNotEqual(signingCert1.ComputedHash, signingCert2.ComputedHash, "Cert hashes do not match");
                 Assert.AreEqual(signed1.ComputedHash, signed2.ComputedHash, "Signed hashes match");

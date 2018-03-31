@@ -30,7 +30,7 @@ namespace CryptLink.SigningFramework {
         /// </summary>
         /// <param name="Provider">The hash provider to use</param>
         /// <param name="SigningCert">If provided the cert to sign the hash with</param>
-        public void ComputeHash(Hash.HashProvider Provider, Cert SigningCert = null) {
+        public void ComputeHash(HashProvider Provider, Cert SigningCert = null) {
             ComputedHash = Hash.Compute(GetHashableData(), Provider, SigningCert);
         }
 
@@ -59,6 +59,18 @@ namespace CryptLink.SigningFramework {
         /// <returns>Returns TRUE if the hash and signature verify correctly</returns>
         public bool Verify(Cert SigningPublicCert, out string Reason) {
             return ComputedHash.Verify(GetHashableData(), out Reason, SigningPublicCert);
+        }
+
+        /// <summary>
+        /// Appends a series of bytes
+        /// </summary>
+        /// <param name="Bytes">The list of byte arrays to append</param>
+        /// <returns></returns>
+        public byte[] AppendBytes(params byte[][] Bytes) {
+            var newBytes = Bytes[0];
+
+            foreach()
+
         }
 
     }

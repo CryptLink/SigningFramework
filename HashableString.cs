@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using static CryptLink.SigningFramework.Hash;
 
 namespace CryptLink.SigningFramework {
 
@@ -9,36 +8,18 @@ namespace CryptLink.SigningFramework {
     /// </summary>
     public class HashableString : Hashable {
 
-        public HashableString() { }
-        
-        public HashableString(string _Value, HashProvider _Provider, Cert _SigningCert = null) {
-            Value = _Value;
-            ComputeHash(_Provider, _SigningCert);
-        }
-        
-        /// <summary>
-        /// Create a new Hashable string 
-        /// </summary>
-        /// <param name="_Value">The string to hash</param>
-        /// <param name="Noramilize">If true, trims whitespace and set to lowercase invariant</param>
-        public HashableString(string _Value, bool Noramilize, HashProvider _Provider, Cert _SigningCert = null) {
-            if (Noramilize) {
-                Value = _Value.ToLowerInvariant().Trim();
-            } else {
-                Value = _Value;
+        public HashableString(string _Value) {
+            if (_Value == null) {
+                throw new ArgumentNullException("The provided string can't be null");
             }
 
-            ComputeHash(_Provider, _SigningCert);
+            Value = _Value;
         }
-
+        
         public string Value { get; }
 
         public override byte[] GetHashableData() {
-            if (string.IsNullOrEmpty(Value) == false) {
-                return Encoding.ASCII.GetBytes(Value);
-            } else {
-                throw new Exception("Value was null");
-            }
+            return Encoding.ASCII.GetBytes(Value);
         }
 
     }

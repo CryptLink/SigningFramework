@@ -10,7 +10,7 @@ namespace CryptLinkTests {
 
         [Test(), Category("Hash")]
         public void HashCreateOverloads() {
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute("TEST", provider, null);
                 var h1FromBytes = Hash.FromComputedBytes(h1.Bytes, provider, h1.SourceByteLength);
                 var h1FromB64 = Hash.FromB64(Utility.EncodeBytes(h1.Bytes), provider, h1.SourceByteLength);
@@ -25,7 +25,7 @@ namespace CryptLinkTests {
 
         [Test(), Category("Hash")]
         public void HashSerializeDeseralize() {
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute("TEST", provider, null);
 
                 var h1Serialized = Newtonsoft.Json.JsonConvert.SerializeObject(h1);
@@ -38,7 +38,7 @@ namespace CryptLinkTests {
 
         [Test(), Category("Hash")]
         public void HashCreateLength() {
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute("TEST", provider, null);
                 
                 var tooLong = h1.Bytes.Concat(BitConverter.GetBytes(true)).ToArray();
@@ -58,7 +58,7 @@ namespace CryptLinkTests {
         [Test(), Category("Hash Compare")]
         public void HashCompareString() {
 
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var hash1 = Hash.Compute("TEST", provider, null);
                 var hash2 = Hash.Compute("TEST", provider, null);
                 var hash3 = Hash.Compute("test", provider, null);
@@ -86,7 +86,7 @@ namespace CryptLinkTests {
 
         [Test(), Category("Hash Compare")]
         public void HashToHashOperators() {
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute("TEST", provider, null);
                 var h2 = Hash.Compute("TEST", provider, null);
                 var h3 = Hash.Compute("test", provider, null);
@@ -137,7 +137,7 @@ namespace CryptLinkTests {
 
         [Test(), Category("Hash Compare")]
         public void HashToBinaryOperators() {
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute("TEST", provider, null);
                 var h2 = Hash.Compute("TEST", provider, null);
                 var h3 = Hash.Compute("test", provider, null);
@@ -185,7 +185,7 @@ namespace CryptLinkTests {
 
         [Test(), Category("Hash Compare")]
         public void BinaryToHashOperators() {
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute("TEST", provider, null);
                 var h2 = Hash.Compute("TEST", provider, null);
                 var h3 = Hash.Compute("test", provider, null);
@@ -236,7 +236,7 @@ namespace CryptLinkTests {
 
         [Test(), Category("Hash Compare")]
         public void HashSorting() {
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 
                 var h1 = Hash.Compute("1", provider, null);
                 var h2 = Hash.Compute("2", provider, null);
@@ -259,7 +259,7 @@ namespace CryptLinkTests {
         public void HashCompareToNull() {
             //Checking nulls with custom comparer can be tricky, here are all the ways I am aware of checking it
 
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 Hash hash1 = Hash.Compute("Test", provider, null);
                 Hash hash2 = null;
 
@@ -281,14 +281,14 @@ namespace CryptLinkTests {
 
         [Test(), Category("Hash")]
         public void HashProviderToOID() {
-            var providerOIDs = new Dictionary<Hash.HashProvider, string>();
-            providerOIDs.Add(Hash.HashProvider.MD5, "1.2.840.113549.2.5");
-            providerOIDs.Add(Hash.HashProvider.SHA1, "1.3.14.3.2.26");
-            providerOIDs.Add(Hash.HashProvider.SHA256, "2.16.840.1.101.3.4.2.1");
-            providerOIDs.Add(Hash.HashProvider.SHA384, "2.16.840.1.101.3.4.2.2");
-            providerOIDs.Add(Hash.HashProvider.SHA512, "2.16.840.1.101.3.4.2.3");
+            var providerOIDs = new Dictionary<HashProvider, string>();
+            //providerOIDs.Add(HashProvider.MD5, "1.2.840.113549.2.5");
+            //providerOIDs.Add(HashProvider.SHA1, "1.3.14.3.2.26");
+            providerOIDs.Add(HashProvider.SHA256, "2.16.840.1.101.3.4.2.1");
+            providerOIDs.Add(HashProvider.SHA384, "2.16.840.1.101.3.4.2.2");
+            providerOIDs.Add(HashProvider.SHA512, "2.16.840.1.101.3.4.2.3");
 
-            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 Assert.True(providerOIDs.ContainsKey(provider), "Test dictionary contains providers.");
 
                 var providerOIDLookup = providerOIDs[provider];

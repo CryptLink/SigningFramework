@@ -155,11 +155,11 @@ namespace CryptLink.SigningFramework {
 
         public static int GetProviderByteLength(HashProvider ForProvider) {
             switch (ForProvider) {
-                case Hash.HashProvider.SHA256:
+                case HashProvider.SHA256:
                     return 32;
-                case Hash.HashProvider.SHA384:
+                case HashProvider.SHA384:
                     return 48;
-                case Hash.HashProvider.SHA512:
+                case HashProvider.SHA512:
                     return 64;
                 default:
                     throw new NotImplementedException("Hash provider '" + ForProvider.ToString() + "' not implemented in GetHashByteLength");
@@ -238,23 +238,6 @@ namespace CryptLink.SigningFramework {
             }
 
             return Hash.Compute(Bytes, Provider.Value, null);
-        }
-        
-        public enum HashProvider {
-            /// <summary>
-            /// SHA2-256bits
-            /// </summary>
-            SHA256,
-
-            /// <summary>
-            /// SHA2-384bits
-            /// </summary>
-            SHA384,
-
-            /// <summary>
-            /// SHA2-512bits
-            /// </summary>
-            SHA512
         }
 
     }

@@ -21,11 +21,11 @@ namespace CryptLink.SigningFramework {
         SortedDictionary<Hash, T> circle = new SortedDictionary<Hash, T>();
         SortedDictionary<Hash, T> unreplicatedNodes = new SortedDictionary<Hash, T>();
         Dictionary<Hash, int> replicationWeights = new Dictionary<Hash, int>();
-        Hash.HashProvider Provider;
+        HashProvider Provider;
 
         Hash[] ayKeys = null;    //cache the ordered keys for better performance
 
-        public ConsistentHash(Hash.HashProvider _Provider){
+        public ConsistentHash(HashProvider _Provider){
             Provider = _Provider;
         }
 

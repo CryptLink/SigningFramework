@@ -1,5 +1,10 @@
 ﻿namespace CryptLink.SigningFramework {
+
+    /// <summary>
+    /// Interface to be implemented by any object that supports hashing by the framework
+    /// </summary>
     public interface IHashable {
+
         /// <summary>
         /// A byte array of data to be hashed
         /// </summary>
@@ -8,7 +13,7 @@
         /// <summary>
         /// Gets the hash of this object using a specified provider, and signs it with a certificate (if provided)
         /// </summary>
-        void ComputeHash(Hash.HashProvider Provider, Cert SigningCert);
+        void ComputeHash(HashProvider Provider, Cert SigningCert);
 
         bool Verify();
 

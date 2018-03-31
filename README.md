@@ -1,6 +1,22 @@
 ﻿# CryptLink.SigningFramework
 A generic framework for hashing and signing arbitrary objects using interfaces. Also implements x509Certificate management features.
 
+## Examples
+The signing framework strives to make common cryptography related tasks simple and extensible. We believe good security should be as simple as as their concepts, and extensible to any object.
+
+### Hashing
+``` C#
+var hashedString = new HashableString(args[0]);
+hashedString.ComputeHash(HashProvider.SHA256);
+Console.WriteLine($"{hashedString.Value}: {hashedString.ComputedHash}");
+```
+
+### Signing
+
+### Extending
+
+
+
 ## Features
 This library implements a number of convenient classes, abstractions and interfaces, below are the major classes in order of abstraction.
 
