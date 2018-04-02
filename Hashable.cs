@@ -1,4 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace CryptLink.SigningFramework {
     /// <summary>
@@ -62,15 +67,22 @@ namespace CryptLink.SigningFramework {
         }
 
         /// <summary>
-        /// Appends a series of bytes
+        /// Uses binary serialization to get the bytes of an object
         /// </summary>
-        /// <param name="Bytes">The list of byte arrays to append</param>
-        /// <returns></returns>
-        public byte[] AppendBytes(params byte[][] Bytes) {
-            var newBytes = Bytes[0];
+        public byte[] SeralizeObject() {
+            var properties = this.GetType().GetProperties()
+                .Where(prop => prop.IsDefined(typeof(HashProperty), false));
 
-            foreach()
+            var formatter = new BinaryFormatter();
+            var stream = new MemoryStream();
 
+            foreach (var prop in properties) {
+                formatter.Serialize(stream, prop.GetValue(this));
+            }
+
+            throw new NotImplementedException("This needs to be tested");
+
+            return stream.ToArray();
         }
 
     }
