@@ -218,10 +218,13 @@ namespace CryptLink.SigningFramework {
         /// <summary>
         /// Gets a HashAlgorithm from a HashProvider using a no-search static array
         /// </summary>
+        [Obsolete("Todo: CryptoConfig is discouraged, after dotnet core 2.1, use HashAlgorithm.Create(string)")]
         private static HashAlgorithm GetHashAlgorithm(HashProvider Provider) {
             
             if (hashAlgorithms[(int)Provider] == null) {
-                var h = HashAlgorithm.Create(Provider.ToString());
+
+                //var h = HashAlgorithm.Create(Provider.ToString());
+                var h = (HashAlgorithm)CryptoConfig.CreateFromName(Provider.ToString());
                 hashAlgorithms[(int)Provider] = h;            
             }
 

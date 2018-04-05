@@ -25,10 +25,7 @@ namespace CryptLink.SigningFrameworkExamples
         public int PurchaseCount { get; set; }
 
         public override byte[] GetHashableData() {
-            //This implementation uses Binary Seralization to get the data to hash, but you can implement a custom method if you prefer
-            //https://docs.microsoft.com/en-us/dotnet/standard/serialization/serialization-guidelines
-
-
+            return GetPropertyBinary();
         }
     }
 }

@@ -69,7 +69,7 @@ namespace CryptLink.SigningFramework {
         /// <summary>
         /// Uses binary serialization to get the bytes of an object
         /// </summary>
-        public byte[] SeralizeObject() {
+        public byte[] GetPropertyBinary() {
             var properties = this.GetType().GetProperties()
                 .Where(prop => prop.IsDefined(typeof(HashProperty), false));
 
@@ -77,10 +77,11 @@ namespace CryptLink.SigningFramework {
             var stream = new MemoryStream();
 
             foreach (var prop in properties) {
+                formatter.Serialize(stream, prop.GetType().Name);
                 formatter.Serialize(stream, prop.GetValue(this));
             }
 
-            throw new NotImplementedException("This needs to be tested");
+            //throw new NotImplementedException("This needs to be tested");
 
             return stream.ToArray();
         }
