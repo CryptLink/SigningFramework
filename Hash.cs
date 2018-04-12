@@ -20,9 +20,7 @@ namespace CryptLink.SigningFramework {
         /// The number of bytes hashed to get this result
         /// </summary>
         public int SourceByteLength { get; private set; }
-
-        static HashAlgorithm[] hashAlgorithms = new HashAlgorithm[Enum.GetNames(typeof(HashProvider)).Length];
-
+        
         public Hash() { }
 
         /// <summary>
@@ -32,13 +30,13 @@ namespace CryptLink.SigningFramework {
         /// <param name="_Provider"></param>
         private Hash(byte[] HashedBytes, HashProvider _Provider, int _SourceByteLength) {
 
-            if (HashedBytes.Length == GetProviderByteLength(_Provider)) {
+            if (HashedBytes.Length == _Provider.GetProviderByteLength()) {
                 Bytes = HashedBytes;
                 Provider = _Provider;
-                SourceByteLength = _SourceByteLength + GetProviderByteLength(_Provider);
+                SourceByteLength = _SourceByteLength + HashedBytes.Length;
             } else {
                 throw new ArgumentException("The provided bytes are not the expected length, should be: "
-                    + GetProviderByteLength(_Provider) +
+                    + _Provider.GetProviderByteLength() +
                     " but was actually: " + HashedBytes.Length);
             }            
         }
@@ -58,7 +56,7 @@ namespace CryptLink.SigningFramework {
         /// <param name="_Provider"></param>
         /// <returns></returns>
         public static Hash FromComputedBytes(byte[] PreComputedHashBytes, HashProvider _Provider, int SourceBytesLength) {
-            if (PreComputedHashBytes.Length == GetProviderByteLength(_Provider)) {
+            if (PreComputedHashBytes.Length == _Provider.GetProviderByteLength()) {
                 return new Hash(PreComputedHashBytes, _Provider, SourceBytesLength);
             } else {
                 throw new ArgumentException("Provided bytes were not the expected length for this hash type");
@@ -73,7 +71,7 @@ namespace CryptLink.SigningFramework {
                 throw new NullReferenceException("Provider is not set to a value");
             }
 
-            return GetProviderByteLength(Provider.Value);
+            return Provider.Value.GetProviderByteLength();
         }
 
         /// <summary>
@@ -92,7 +90,7 @@ namespace CryptLink.SigningFramework {
                 throw new NullReferenceException("Provider is not set to a value");
             }
 
-            var providerLength = GetProviderByteLength(Provider.Value);
+            var providerLength = Provider.Value.GetProviderByteLength();
 
             if (this.Bytes == null) {
                 Reasion = "No hash bytes";
@@ -135,7 +133,7 @@ namespace CryptLink.SigningFramework {
             if (this.SignatureBytes != null) {
                 if (SigningCert != null) {
                     RSACryptoServiceProvider csp = (RSACryptoServiceProvider)SigningCert.PublicKey.Key;
-                    return csp.VerifyHash(this.Bytes, GetOIDForProvider(this.Provider.Value), this.SignatureBytes);
+                    return csp.VerifyHash(this.Bytes, Provider.Value.GetOID().FriendlyName, this.SignatureBytes);
                 } else {
                     //must have the signing cert and the signature bytes
                     Reasion = "The hash is signed, but no signing cert was provided";
@@ -151,33 +149,6 @@ namespace CryptLink.SigningFramework {
 
             Reasion = null;
             return true;
-        }
-
-        public static int GetProviderByteLength(HashProvider ForProvider) {
-            switch (ForProvider) {
-                case HashProvider.SHA256:
-                    return 32;
-                case HashProvider.SHA384:
-                    return 48;
-                case HashProvider.SHA512:
-                    return 64;
-                default:
-                    throw new NotImplementedException("Hash provider '" + ForProvider.ToString() + "' not implemented in GetHashByteLength");
-            }
-        }
-
-        public static string GetOIDForProvider(HashProvider Provider) {
-            return CryptoConfig.MapNameToOID(Provider.ToString());
-        }
-
-        public static HashProvider GetProviderForOID(Oid Provider) {
-            HashProvider parsedProvider;
-
-            if (Enum.TryParse(Provider.FriendlyName, out parsedProvider)) {
-                return parsedProvider;
-            }
-
-            throw new NotImplementedException($"OID Name: {Provider.FriendlyName} is not supported.");
         }
 
         /// <summary>
@@ -205,7 +176,7 @@ namespace CryptLink.SigningFramework {
                 return null;
             }
 
-            HashAlgorithm hashAlgo = GetHashAlgorithm(Provider);
+            HashAlgorithm hashAlgo = Provider.GetHashAlgorithm();
             var hash = new Hash(hashAlgo.ComputeHash(FromBytes), Provider, FromBytes.Length);
 
             if (SigningCert != null && SigningCert.HasPrivateKey) {
@@ -213,22 +184,6 @@ namespace CryptLink.SigningFramework {
             }
 
             return hash;
-        }
-
-        /// <summary>
-        /// Gets a HashAlgorithm from a HashProvider using a no-search static array
-        /// </summary>
-        [Obsolete("Todo: CryptoConfig is discouraged, after dotnet core 2.1, use HashAlgorithm.Create(string)")]
-        private static HashAlgorithm GetHashAlgorithm(HashProvider Provider) {
-            
-            if (hashAlgorithms[(int)Provider] == null) {
-
-                //var h = HashAlgorithm.Create(Provider.ToString());
-                var h = (HashAlgorithm)CryptoConfig.CreateFromName(Provider.ToString());
-                hashAlgorithms[(int)Provider] = h;            
-            }
-
-            return hashAlgorithms[(int)Provider];
         }
 
         /// <summary>

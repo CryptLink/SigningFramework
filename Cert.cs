@@ -54,7 +54,7 @@ namespace CryptLink.SigningFramework {
 
         public Cert(X509Certificate2 Certificate) {
             this.X509Certificate = Certificate;
-            Provider = Hash.GetProviderForOID(Certificate.SignatureAlgorithm);
+            Provider = Certificate.SignatureAlgorithm.GetCryptLinkHashProvider();
             ComputeHash(Provider);
             SeralizeCertificate();
         }
@@ -63,7 +63,7 @@ namespace CryptLink.SigningFramework {
             this.X509Certificate = Certificate;
             this.EncryptionPassword = EncryptionPassword;
             this.PasswordEncrypt = true;
-            Provider = Hash.GetProviderForOID(Certificate.SignatureAlgorithm);
+            Provider = Certificate.SignatureAlgorithm.GetCryptLinkHashProvider();
             ComputeHash(Provider);
             SeralizeCertificate();
         }
@@ -176,7 +176,7 @@ namespace CryptLink.SigningFramework {
         public void SignHash(Hash Hash, HashProvider Provider) {
             if (X509Certificate.HasPrivateKey && Hash.Bytes != null) {
                 var csp = (RSACryptoServiceProvider)X509Certificate.PrivateKey;
-                Hash.SignatureBytes = csp.SignHash(Hash.Bytes, Hash.GetOIDForProvider(Provider));
+                Hash.SignatureBytes = csp.SignHash(Hash.Bytes, Provider.GetOID().Value);
                 Hash.SignatureCertHash = this.ComputedHash.Bytes;
             } else {
                 throw new NullReferenceException("No private key");

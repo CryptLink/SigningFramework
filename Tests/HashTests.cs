@@ -279,6 +279,7 @@ namespace CryptLinkTests {
             }
         }
 
+
         [Test(), Category("Hash")]
         public void HashProviderToOID() {
             var providerOIDs = new Dictionary<HashProvider, string>();
@@ -292,12 +293,12 @@ namespace CryptLinkTests {
                 Assert.True(providerOIDs.ContainsKey(provider), "Test dictionary contains providers.");
 
                 var providerOIDLookup = providerOIDs[provider];
-                var providerOID = Hash.GetOIDForProvider(provider);
+                var providerOID = provider.GetOID().Value;
 
                 Assert.AreEqual(providerOIDLookup, providerOID);
             }
-                
         }
+
 
     }
 
