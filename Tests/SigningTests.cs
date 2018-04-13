@@ -54,7 +54,7 @@ namespace CryptLinkTests {
 
         [Test]
         public void SignedVerifyTests() {
-
+            throw new NotImplementedException();
         }
 
     }

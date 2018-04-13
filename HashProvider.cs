@@ -67,13 +67,17 @@ namespace CryptLink.SigningFramework {
         }
 
         public static HashProvider GetCryptLinkHashProvider(this Oid oid) {
-            HashProvider parsed;
-
-            if (Enum.TryParse(oid.FriendlyName, out parsed)) {
-                return parsed;
-            } else {
-                throw new NotImplementedException("No HashProvider implemented for Oid: '" + oid.FriendlyName + "'.");
+            switch (oid.FriendlyName) {
+                case "sha256RSA":
+                    return HashProvider.SHA256;
+                case "sha384RSA":
+                    return HashProvider.SHA384;
+                case "sha512RSA":
+                    return HashProvider.SHA512;
+                default:
+                    throw new NotImplementedException("No HashProvider implemented for Oid: '" + oid.FriendlyName + "'.");
             }
         }
+
     }
 }

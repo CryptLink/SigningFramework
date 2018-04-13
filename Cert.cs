@@ -142,7 +142,9 @@ namespace CryptLink.SigningFramework {
             }
 
             if (!PasswordEncrypt && ProtectedStoragePath == null) {
-                CertificateBase64 = Utility.EncodeBytes(X509Certificate.Export(X509ContentType.Pkcs12));
+                var exportBytes = X509Certificate.Export(X509ContentType.Pkcs12);
+                CertificateBase64 = Utility.EncodeBytes(exportBytes);
+                exportBytes = null;
             }
 
         }
