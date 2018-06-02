@@ -3,9 +3,15 @@ skip_non_tags: true
 configuration: Release
 platform: Any CPU
 before_build:
-  - cmd: dotnet --version
-  - cmd: dotnet restore SigningFramework.csproj --verbosity m
-  - cmd: dotnet restore Tests/SigningFrameworkTests.csproj --verbosity m
-  - cmd: dotnet test Tests/SigningFrameworkTests.csproj
+  - ps: >-
+      dotnet --version
+      dotnet restore SigningFramework.csproj --verbosity m
+      dotnet restore Tests/SigningFrameworkTests.csproj --verbosity m
+      dotnet test Tests/SigningFrameworkTests.csproj -xml SigningFrameworkTests.xml
+      
+      # upload results to AppVeyor
+      $wc = New-Object 'System.Net.WebClient'
+      $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\SigningFrameworkTests.xml))
+      
 build_script:
   - cmd: dotnet publish SigningFramework.csproj
