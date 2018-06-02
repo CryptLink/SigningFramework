@@ -2,7 +2,9 @@ version: 1.0.{build}
 skip_non_tags: true
 configuration: Release
 platform: Any CPU
-build:
-  project: SigningFramework.csproj
-  publish_core_console: true
-  verbosity: minimal
+before_build:
+  - cmd: dotnet --version
+  - cmd: dotnet restore SigningFramework.csproj --verbosity m
+  - cmd: dotnet test SigningFramework.csproj
+build_script:
+  - cmd: dotnet publish SigningFramework.csproj
