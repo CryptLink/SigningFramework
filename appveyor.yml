@@ -2,6 +2,8 @@ version: 1.0.{build}
 skip_non_tags: true
 configuration: Release
 platform: Any CPU
+image: Visual Studio 2017
+
 before_build:
   - ps: .\build.ps1
       
