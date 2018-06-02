@@ -12,11 +12,14 @@ namespace CryptLink.SigningFramework {
     public abstract class Hashable : IHashable {
 
         /// <summary>
-        /// A byte array of data to be hashed
+        /// Default hashable data
         /// </summary>
+        public byte[] GetHashablePropertyData() {
+            return GetPropertyBinary();
+        }
+
         public abstract byte[] GetHashableData();
         
-
         public byte[] ComputedHashBytes() {
             if (ComputedHash != null) {
                 return ComputedHash.Bytes;
@@ -71,7 +74,11 @@ namespace CryptLink.SigningFramework {
         /// </summary>
         public byte[] GetPropertyBinary() {
             var properties = this.GetType().GetProperties()
-                .Where(prop => prop.IsDefined(typeof(HashProperty), false));
+                .Where(prop => prop.IsDefined(typeof(HashProperty), false)).DefaultIfEmpty();
+
+            if (properties == null || properties.Count() == 0) {
+                throw new ArgumentException("This object does not have properties marked with the attribute [HashProperty], at least one property must be provided or the object must override GetHashableData()");
+            }
 
             var formatter = new BinaryFormatter();
             var stream = new MemoryStream();

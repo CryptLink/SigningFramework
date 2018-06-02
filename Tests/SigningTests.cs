@@ -1,6 +1,9 @@
-﻿using CryptLink.SigningFramework;
+﻿using CryptLink;
+using CryptLink.SigningFramework;
 using NUnit.Framework;
 using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CryptLinkTests {
 
@@ -13,9 +16,9 @@ namespace CryptLinkTests {
         Cert verifyCert2; //contains only the public key
 
         [SetUp]
-        public void Setup_GenerateCert() {
-            //signingCert1 = new CertBuilder { SubjectName = "CN=Test CA1", KeyStrength = 1024 }.BuildCert();
-            //signingCert2 = new CertBuilder { SubjectName = "CN=Test CA2", KeyStrength = 1024 }.BuildCert();
+        public void Setup_LoadCert() {
+            signingCert1 = Cert.LoadFromPfx("Certs/ca1.pfx_testonly_donotuse", "");
+            signingCert2 = Cert.LoadFromPfx("Certs/cert1.pfx_testonly_donotuse", "");
 
             verifyCert1 = signingCert1.RemovePrivateKey();
             verifyCert2 = signingCert2.RemovePrivateKey();
@@ -29,10 +32,10 @@ namespace CryptLinkTests {
         [Test]
         public void SigningTests() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
-                var signed1 = new HashableString("Test");
+                var signed1 = new HashableString(Guid.NewGuid().ToString());
                 signed1.ComputeHash(provider, signingCert1);
 
-                var signed2 = new HashableString("Test");
+                var signed2 = new HashableString(signed1.Value);
                 signed2.ComputeHash(provider, signingCert2);
 
                 Assert.AreNotEqual(signingCert1.ComputedHash, signingCert2.ComputedHash, "Cert hashes do not match");
@@ -40,22 +43,56 @@ namespace CryptLinkTests {
                 Assert.AreNotEqual(signed1.ComputedHash.SignatureCertHash, signed2.ComputedHash.SignatureCertHash, "Signed hashes match");
                 Assert.AreNotEqual(signed1.ComputedHash.SignatureBytes, signed2.ComputedHash.SignatureBytes, "Signed hashes match");
 
+                //The signed hashes verify as the should
                 Assert.IsTrue(signed1.Verify(signingCert1));
                 Assert.IsTrue(signed2.Verify(signingCert2));
                 Assert.IsTrue(signed1.Verify(verifyCert1));
                 Assert.IsTrue(signed2.Verify(verifyCert2));
 
+                //but don't with the wrong certs
                 Assert.IsFalse(signed2.Verify(signingCert1));
                 Assert.IsFalse(signed1.Verify(signingCert2));
                 Assert.IsFalse(signed2.Verify(verifyCert1));
                 Assert.IsFalse(signed1.Verify(verifyCert2));
+
+                //Change both hashes slightly
+                if (signed1.ComputedHash.SignatureBytes[0] < Byte.MaxValue) {
+                    signed1.ComputedHash.SignatureBytes[0]++;
+                } else {
+                    signed1.ComputedHash.SignatureBytes[0]--;
+                }
+
+                if (signed2.ComputedHash.SignatureBytes[0] < Byte.MaxValue) {
+                    signed2.ComputedHash.SignatureBytes[0]++;
+                } else {
+                    signed2.ComputedHash.SignatureBytes[0]--;
+                }
+
+                //Neither should verify now
+                Assert.IsFalse(signed1.Verify(signingCert1));
+                Assert.IsFalse(signed2.Verify(signingCert2));
+                Assert.IsFalse(signed1.Verify(verifyCert1));
+                Assert.IsFalse(signed2.Verify(verifyCert2));
             }
         }
 
         [Test]
-        public void SignedVerifyTests() {
-            throw new NotImplementedException();
+        public void HashVerifyTests() {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
+                var signed = new HashableString(Guid.NewGuid().ToString());
+                signed.ComputeHash(provider, signingCert1);
+
+                Assert.IsTrue(signed.Verify());
+
+
+                var unsigned = new HashableString(Guid.NewGuid().ToString());
+                unsigned.ComputeHash(provider);
+
+
+
+            }
         }
+
 
     }
 }

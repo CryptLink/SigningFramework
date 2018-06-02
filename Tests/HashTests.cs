@@ -11,7 +11,7 @@ namespace CryptLinkTests {
         [Test(), Category("Hash")]
         public void HashCreateOverloads() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
-                var h1 = Hash.Compute("TEST", provider, null);
+                var h1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
                 var h1FromBytes = Hash.FromComputedBytes(h1.Bytes, provider, h1.SourceByteLength);
                 var h1FromB64 = Hash.FromB64(Utility.EncodeBytes(h1.Bytes), provider, h1.SourceByteLength);
 
@@ -26,7 +26,7 @@ namespace CryptLinkTests {
         [Test(), Category("Hash")]
         public void HashSerializeDeseralize() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
-                var h1 = Hash.Compute("TEST", provider, null);
+                var h1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
 
                 var h1Serialized = Newtonsoft.Json.JsonConvert.SerializeObject(h1);
                 var h1Deserialized = Newtonsoft.Json.JsonConvert.DeserializeObject<Hash>(h1Serialized);
@@ -39,7 +39,7 @@ namespace CryptLinkTests {
         [Test(), Category("Hash")]
         public void HashCreateLength() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
-                var h1 = Hash.Compute("TEST", provider, null);
+                var h1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
                 
                 var tooLong = h1.Bytes.Concat(BitConverter.GetBytes(true)).ToArray();
                 Assert.Throws<ArgumentException>(delegate {
@@ -59,10 +59,11 @@ namespace CryptLinkTests {
         public void HashCompareString() {
 
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
-                var hash1 = Hash.Compute("TEST", provider, null);
-                var hash2 = Hash.Compute("TEST", provider, null);
-                var hash3 = Hash.Compute("test", provider, null);
-                var hash4 = Hash.Compute("", provider, null);
+                var tempGuid = Guid.NewGuid().ToString();
+                var hash1 = Hash.Compute(tempGuid, provider);
+                var hash2 = Hash.Compute(tempGuid, provider);
+                var hash3 = Hash.Compute(tempGuid.ToUpper(), provider);
+                var hash4 = Hash.Compute("", provider);
 
                 Assert.AreEqual(hash1.Provider, provider,
                     "HashProvider is set correctly");
@@ -78,8 +79,6 @@ namespace CryptLinkTests {
                 Assert.False(hash1.CompareTo(hash3) == 0,
                     "Separate hashes of the different case strings returns false for provider: '" + provider.ToString() + "'");
 
-                Assert.AreEqual(hash1.Rehash().Bytes, hash2.Rehash().Bytes,
-                    "Rehash of the same strings returns true for provider: '" + provider.ToString() + "'");
 
             }
         }
@@ -87,9 +86,10 @@ namespace CryptLinkTests {
         [Test(), Category("Hash Compare")]
         public void HashToHashOperators() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
-                var h1 = Hash.Compute("TEST", provider, null);
-                var h2 = Hash.Compute("TEST", provider, null);
-                var h3 = Hash.Compute("test", provider, null);
+                var tempGuid = Guid.NewGuid().ToString();
+                var h1 = Hash.Compute(tempGuid, provider);
+                var h2 = Hash.Compute(tempGuid, provider);
+                var h3 = Hash.Compute(tempGuid.ToUpper(), provider);
 
                 byte[] maxBytes = new byte[h1.HashByteLength(true)];
                 byte[] minBytes = new byte[h1.HashByteLength(true)];
@@ -138,9 +138,10 @@ namespace CryptLinkTests {
         [Test(), Category("Hash Compare")]
         public void HashToBinaryOperators() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
-                var h1 = Hash.Compute("TEST", provider, null);
-                var h2 = Hash.Compute("TEST", provider, null);
-                var h3 = Hash.Compute("test", provider, null);
+                var tempGuid = Guid.NewGuid().ToString();
+                var h1 = Hash.Compute(tempGuid, provider);
+                var h2 = Hash.Compute(tempGuid, provider);
+                var h3 = Hash.Compute(tempGuid.ToUpper(), provider);
 
                 byte[] max = new byte[h1.HashByteLength(true)];
                 byte[] min = new byte[h1.HashByteLength(true)];
@@ -186,9 +187,10 @@ namespace CryptLinkTests {
         [Test(), Category("Hash Compare")]
         public void BinaryToHashOperators() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
-                var h1 = Hash.Compute("TEST", provider, null);
-                var h2 = Hash.Compute("TEST", provider, null);
-                var h3 = Hash.Compute("test", provider, null);
+                var tempGuid = Guid.NewGuid().ToString();
+                var h1 = Hash.Compute(tempGuid, provider);
+                var h2 = Hash.Compute(tempGuid, provider);
+                var h3 = Hash.Compute(tempGuid.ToUpper(), provider);
 
                 byte[] maxBytes = new byte[h1.HashByteLength(true)];
                 byte[] minBytes = new byte[h1.HashByteLength(true)];
@@ -238,9 +240,9 @@ namespace CryptLinkTests {
         public void HashSorting() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 
-                var h1 = Hash.Compute("1", provider, null);
-                var h2 = Hash.Compute("2", provider, null);
-                var h3 = Hash.Compute("3", provider, null);
+                var h1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
+                var h2 = Hash.Compute(Guid.NewGuid().ToString(), provider);
+                var h3 = Hash.Compute(Guid.NewGuid().ToString(), provider);
 
                 var hList = new List<Hash>();
                 hList.Add(h1);
@@ -260,7 +262,7 @@ namespace CryptLinkTests {
             //Checking nulls with custom comparer can be tricky, here are all the ways I am aware of checking it
 
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
-                Hash hash1 = Hash.Compute("Test", provider, null);
+                Hash hash1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
                 Hash hash2 = null;
 
                 Assert.NotNull(hash1, "New hash is not null");

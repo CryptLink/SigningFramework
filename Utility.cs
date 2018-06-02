@@ -110,6 +110,7 @@ namespace CryptLink.SigningFramework {
                         if (chainCA.Certificate.Thumbprint == CustomCA.Thumbprint) {
                             return true;
                         } else {
+                            log += "Chain CA thumbprint was not the same as the provided CA";
                             return false;
                         }
                     } else {

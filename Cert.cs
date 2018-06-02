@@ -7,6 +7,7 @@ using static CryptLink.SigningFramework.Hash;
 
 namespace CryptLink.SigningFramework {
 
+
     /// <summary>
     /// A wrapper for x509Certificate2 that provides easy signing, saving and loading
     /// </summary>
@@ -66,6 +67,20 @@ namespace CryptLink.SigningFramework {
             Provider = Certificate.SignatureAlgorithm.GetCryptLinkHashProvider();
             ComputeHash(Provider);
             SeralizeCertificate();
+        }
+
+        public static Cert LoadFromPfx(string PfxPath, string PfxPassword) {
+            X509Certificate2Collection collection = new X509Certificate2Collection();
+            //X509KeyStorageFlags.PersistKeySet
+            collection.Import(PfxPath, PfxPassword, X509KeyStorageFlags.Exportable);
+
+            if (collection.Count == 1) {
+                foreach (var cert in collection) {
+                    return new Cert(cert);
+                }
+            }
+
+            throw new InvalidOperationException($"The certificate had {collection.Count} certificates, it should contain 1");
         }
 
         public bool CheckCertificate() {
@@ -177,11 +192,32 @@ namespace CryptLink.SigningFramework {
         /// <param name="Provider">The provider to use</param>
         public void SignHash(Hash Hash, HashProvider Provider) {
             if (X509Certificate.HasPrivateKey && Hash.Bytes != null) {
-                var csp = (RSACryptoServiceProvider)X509Certificate.PrivateKey;
-                Hash.SignatureBytes = csp.SignHash(Hash.Bytes, Provider.GetOID().Value);
-                Hash.SignatureCertHash = this.ComputedHash.Bytes;
+                //var csp = RSA.Create();//(RSACryptoServiceProvider)X509Certificate.PrivateKey;
+                //Hash.SignatureBytes = csp.SignHash(Hash.Bytes, Provider.GetOID().Value);
+                //Hash.SignatureCertHash = this.ComputedHash.Bytes;
+
+                using (var rsa = RSA.Create()) {
+                    RSAParameters rp = new RSAParameters();
+                    rsa.ImportParameters(X509Certificate.GetRSAPrivateKey().ExportParameters(true));
+
+                    Hash.SignatureBytes = rsa.SignData(Hash.Bytes, Provider.GetHashAlgorithmName(), RSASignaturePadding.Pkcs1);
+                    Hash.SignatureCertHash = this.ComputedHash.Bytes;
+                }
             } else {
                 throw new NullReferenceException("No private key");
+            }
+        }
+
+        /// <summary>
+        /// Use this cert to verify a hash
+        /// </summary>
+        /// <param name="Hash">The hash to verify</param>
+        /// <param name="Provider">The provider to use</param>
+        public bool VerifyHash(Hash Hash, HashProvider Provider) {
+            using (var rsa = RSA.Create()) {
+                RSAParameters rp = new RSAParameters();
+                rsa.ImportParameters(X509Certificate.GetRSAPublicKey().ExportParameters(false));
+                return rsa.VerifyData(Hash.Bytes, Hash.SignatureBytes, Provider.GetHashAlgorithmName(), RSASignaturePadding.Pkcs1);
             }
         }
 

@@ -79,5 +79,18 @@ namespace CryptLink.SigningFramework {
             }
         }
 
+        public static HashAlgorithmName GetHashAlgorithmName(this HashProvider Provider) {
+            switch (Provider) {
+                case HashProvider.SHA256:
+                    return HashAlgorithmName.SHA256;
+                case HashProvider.SHA384:
+                    return HashAlgorithmName.SHA384;
+                case HashProvider.SHA512:
+                    return HashAlgorithmName.SHA512;
+                default:
+                    throw new NotImplementedException("Hash provider '" + Provider.ToString() + "' not implemented in GetHashAlgorithmName");
+            }
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace CryptLink.SigningFramework {
@@ -132,19 +133,23 @@ namespace CryptLink.SigningFramework {
 
             if (this.SignatureBytes != null) {
                 if (SigningCert != null) {
-                    RSACryptoServiceProvider csp = (RSACryptoServiceProvider)SigningCert.PublicKey.Key;
-                    return csp.VerifyHash(this.Bytes, Provider.Value.GetOID().FriendlyName, this.SignatureBytes);
+                    if (!SigningCert.VerifyHash(this, this.Provider.Value)) {
+                        Reasion = "The hash signature is invalid";
+                        return false;
+                    } 
                 } else {
                     //must have the signing cert and the signature bytes
                     Reasion = "The hash is signed, but no signing cert was provided";
                     return false;
                 }
-            } else {
-                var computed = Compute(DataBytes, this.Provider.Value, null);
-                if (this.Bytes != computed.Bytes) {
-                    Reasion = "Computed hash does not match the provided hash";
-                    return false;
-                }
+            } 
+
+            //actually check the hash
+            var computed = Compute(DataBytes, this.Provider.Value, default(Cert));
+
+            if (this != computed) {
+                Reasion = "Computed hash does not match the provided hash";
+                return false;
             }
 
             Reasion = null;
@@ -156,9 +161,32 @@ namespace CryptLink.SigningFramework {
         /// </summary>
         /// <param name="FromString">The string to hash</param>
         /// <param name="Provider">The provider to hash with</param>
+        /// <returns>A new Hash object</returns>
+        public static Hash Compute(string FromString, HashProvider Provider) {
+            UnicodeEncoding UE = new UnicodeEncoding();
+            return Compute(UE.GetBytes(FromString), Provider, default(Cert));
+        }
+
+        /// <summary>
+        /// Computes a hash from a string
+        /// </summary>
+        /// <param name="FromString">The string to hash</param>
+        /// <param name="Provider">The provider to hash with</param>
         /// <param name="SigningCert">Optional cert to sign with</param>
         /// <returns>A new Hash object</returns>
-        public static Hash Compute(string FromString, HashProvider Provider, Cert SigningCert = null) {
+        public static Hash Compute(string FromString, HashProvider Provider, Cert SigningCert) {
+            UnicodeEncoding UE = new UnicodeEncoding();
+            return Compute(UE.GetBytes(FromString), Provider, SigningCert);
+        }
+
+        /// <summary>
+        /// Computes a hash from a string
+        /// </summary>
+        /// <param name="FromString">The string to hash</param>
+        /// <param name="Provider">The provider to hash with</param>
+        /// <param name="SigningCert">Optional cert to sign with</param>
+        /// <returns>A new Hash object</returns>
+        public static Hash Compute(string FromString, HashProvider Provider, X509Certificate2 SigningCert) {
             UnicodeEncoding UE = new UnicodeEncoding();
             return Compute(UE.GetBytes(FromString), Provider, SigningCert);
         }
@@ -187,15 +215,18 @@ namespace CryptLink.SigningFramework {
         }
 
         /// <summary>
-        /// Generates a new hash by re-hashing the current hash bytes
-        /// Useful for making a new re-producible hash for distributing in a ConsistentHash table, not signable 
+        /// Computes the hash from a byte[] and sets the HashProvider
+        /// If a cert with a private key is provided the hash will also be signed
         /// </summary>
-        public Hash Rehash() {
-            if (!Provider.HasValue) {
-                throw new NullReferenceException("Provider is not set to a value");
+        /// <param name="FromBytes">Bytes to compute the hash from</param>
+        /// <param name="Provider">The crypto provider to compute the hash with</param>
+        /// <param name="SigningCert">Optional cert to sign with</param>
+        public static Hash Compute(byte[] FromBytes, HashProvider Provider, X509Certificate2 SigningCert = null) {
+            if (SigningCert == null) {
+                return Compute(FromBytes, Provider, default(Cert));
+            } else {
+                return Compute(FromBytes, Provider, new Cert(SigningCert));
             }
-
-            return Hash.Compute(Bytes, Provider.Value, null);
         }
 
     }

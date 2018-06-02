@@ -25,7 +25,7 @@ namespace CryptLink.SigningFrameworkExamples
         public int PurchaseCount { get; set; }
 
         public override byte[] GetHashableData() {
-            return GetPropertyBinary();
+            return GetHashablePropertyData();
         }
     }
 }
