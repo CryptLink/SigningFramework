@@ -5,7 +5,7 @@ platform: Any CPU
 before_build:
   - cmd: dotnet --version
   - cmd: dotnet restore SigningFramework.csproj --verbosity m
-  - cmd: dotnet restore Tests/ConsistentHashTests.csproj --verbosity m
-  - cmd: dotnet test Tests/ConsistentHashTests.csproj SigningFramework.csproj
+  - cmd: dotnet restore Tests/SigningFrameworkTests.csproj --verbosity m
+  - cmd: dotnet test Tests/SigningFrameworkTests.csproj SigningFramework.csproj
 build_script:
   - cmd: dotnet publish SigningFramework.csproj
