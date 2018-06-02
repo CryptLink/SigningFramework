@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>CryptLink.SigningFramework</AssemblyName>
+    <RootNamespace>CryptLink.SigningFramework</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Examples\**" />
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Examples\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Examples\**" />
+    <None Remove="Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="CryptLink.SigningFramework.0.0.1.nupkg" />
+  </ItemGroup>
+
+</Project>
