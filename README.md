@@ -1,6 +1,8 @@
 ﻿# CryptLink.SigningFramework
 A generic framework for hashing and signing arbitrary objects using interfaces. Also implements x509Certificate management features.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/j9iof6d4cb7kaqal/branch/master?svg=true)](https://ci.appveyor.com/project/CryptLink/signingframework/branch/master)
+
 ## Examples
 The signing framework strives to make common cryptography related tasks simple and extensible. We believe good security should be as simple as as their concepts, and extensible to any object.
 
