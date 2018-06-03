@@ -1,4 +1,5 @@
-dotnet --version;
+write-host "dotnet version: " (dotnet --version);
+
 dotnet restore SigningFramework.csproj --verbosity m;
 dotnet restore Tests/SigningFrameworkTests.csproj --verbosity m;
 dotnet test Tests/SigningFrameworkTests.csproj --logger:"trx;LogFileName=\Results.trx";

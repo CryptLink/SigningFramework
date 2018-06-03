@@ -1,6 +1,7 @@
 ﻿# CryptLink.SigningFramework
 A generic framework for hashing and signing arbitrary objects using interfaces. Also implements x509Certificate management features.
 
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![Build status](https://ci.appveyor.com/api/projects/status/j9iof6d4cb7kaqal/branch/master?svg=true)](https://ci.appveyor.com/project/CryptLink/signingframework/branch/master)
 
 ## Examples
