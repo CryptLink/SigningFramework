@@ -29,7 +29,7 @@ namespace CryptLinkTests {
             Assert.False(verifyCert2.HasPrivateKey);
         }
 
-        [Test]
+        [Test, Category("Signing")]
         public void SigningTests() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var signed1 = new HashableString(Guid.NewGuid().ToString());
@@ -76,20 +76,16 @@ namespace CryptLinkTests {
             }
         }
 
-        [Test]
+        [Test, Category("Hashing")]
         public void HashVerifyTests() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var signed = new HashableString(Guid.NewGuid().ToString());
                 signed.ComputeHash(provider, signingCert1);
 
-                Assert.IsTrue(signed.Verify());
-
+                Assert.IsTrue(signed.Verify(signingCert1));
 
                 var unsigned = new HashableString(Guid.NewGuid().ToString());
                 unsigned.ComputeHash(provider);
-
-
-
             }
         }
 

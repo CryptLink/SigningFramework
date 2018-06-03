@@ -8,7 +8,7 @@ namespace CryptLinkTests {
 	[TestFixture()]
 	public class HashTests {
 
-        [Test(), Category("Hash")]
+        [Test(), Category("Hashing")]
         public void HashCreateOverloads() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
@@ -23,7 +23,7 @@ namespace CryptLinkTests {
             }
         }
 
-        [Test(), Category("Hash")]
+        [Test(), Category("Hashing")]
         public void HashSerializeDeseralize() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
@@ -36,7 +36,7 @@ namespace CryptLinkTests {
             }
         }
 
-        [Test(), Category("Hash")]
+        [Test(), Category("Hashing")]
         public void HashCreateLength() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
@@ -282,7 +282,7 @@ namespace CryptLinkTests {
         }
 
 
-        [Test(), Category("Hash")]
+        [Test(), Category("Hashing")]
         public void HashProviderToOID() {
             var providerOIDs = new Dictionary<HashProvider, string>();
             //providerOIDs.Add(HashProvider.MD5, "1.2.840.113549.2.5");

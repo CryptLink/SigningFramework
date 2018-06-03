@@ -7,14 +7,14 @@ namespace CryptLinkTests {
     [TestFixture]
     public class HashableTests {
 
-        [Test, Category("Hash")]
+        [Test, Category("Hashing")]
         public void HashableIsHashable() {
             Assert.False(this is IHashable, "This test should not derive from the Hashable type");
             Assert.False(new Hash() is IHashable, "A Hash should derive from the Hashable type");
             Assert.True(new HashableString(Guid.NewGuid().ToString()) is IHashable, "A HashableString should derive from the Hashable type");
         }
 
-        [Test, Category("Hash")]
+        [Test, Category("Hashing"), Category("Serialization")]
         public void HashableStringSerializeDeserialize() {
 
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
@@ -27,7 +27,20 @@ namespace CryptLinkTests {
             }
         }
 
-        [Test, Category("Hash")]
+        [Test, Category("Hashing"), Category("Serialization")]
+        public void HashableBytesSerializeDeserialize() {
+
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
+                var h1 = new HashableBytes(Guid.NewGuid().ToByteArray());
+                h1.ComputeHash(provider);
+                var h1s = Newtonsoft.Json.JsonConvert.SerializeObject(h1);
+                var h1d = Newtonsoft.Json.JsonConvert.DeserializeObject<HashableString>(h1s);
+
+                Assert.AreEqual(h1.ComputedHash, h1d.ComputedHash);
+            }
+        }
+
+        [Test, Category("Hashing")]
         public void HashableStringHashes() {
 
             var precomputedHashes = new Dictionary<HashProvider, string>() {

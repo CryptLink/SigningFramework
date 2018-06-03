@@ -127,7 +127,7 @@ namespace CryptLink.SigningFramework {
                 throw new NullReferenceException("Provider is not set to a value");
             }
 
-            if (HashLengthValid(out Reasion, SigningCert.PublicKey.Key.KeySize) == false) {
+            if (HashLengthValid(out Reasion, SigningCert?.PublicKey?.Key?.KeySize) == false) {
                 return false;
             }
 

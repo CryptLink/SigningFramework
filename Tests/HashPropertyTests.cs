@@ -9,7 +9,7 @@ namespace CryptLink.SigningFrameworkTests
     [TestFixture]
     public class HashPropertyTests {
 
-        [Test]
+        [Test, Category("Hashing"), Category("Serialization")]
         public void TestGetPropertyData() {
             var testObject = new TestHashableObject();
             var testObjectB64 = Utility.EncodeBytes(testObject.GetPropertyBinary());
@@ -27,7 +27,7 @@ namespace CryptLink.SigningFrameworkTests
             Assert.AreNotEqual(testObjectB64, testObjectB64_3, "Change of property marked with [HashProperty] does change result from GetPropertyBinary()");
         }
 
-        [Test]
+        [Test, Category("Hashing"), Category("Serialization")]
         public void TestHashProperty() {
 
             var r = new Random();
@@ -44,7 +44,7 @@ namespace CryptLink.SigningFrameworkTests
 
             testObject.ComputeHash(HashProvider.SHA256);
             var testHash1 = testObject.ComputedHash;
-            var expectedHash = Hash.FromB64(@"2J/uGa9WX6K1lYJahu9oGdHD+77LqzWI7fIp3DH35Is=", HashProvider.SHA256, testObjectBytes.Length);
+            var expectedHash = Hash.FromB64(@"qqwUNwkqmNSmvTu6aOuG6e0JoKVa9de1xeFFFQVLT7c=", HashProvider.SHA256, testObjectBytes.Length);
             Assert.AreEqual(expectedHash, testHash1);
 
             testObject.IntUnhashed = -1;
@@ -55,7 +55,7 @@ namespace CryptLink.SigningFrameworkTests
             testObject.IntHashed = -1;
             testObject.ComputeHash(HashProvider.SHA256);
             var testHash3 = testObject.ComputedHash;
-            Assert.AreEqual(expectedHash, testHash3, "Change of property not marked with [HashProperty] does not change the hash");
+            Assert.AreNotEqual(expectedHash, testHash3, "Change of property marked with [HashProperty] does change the hash");
 
         }
     }
