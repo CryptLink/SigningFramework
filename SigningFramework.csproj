@@ -32,4 +32,13 @@ Also provides a IComparable byte[] wrapper for efficient comparison and sorting.
     <None Remove="CryptLink.SigningFramework.0.0.1.nupkg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="LICENSE.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
