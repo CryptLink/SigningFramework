@@ -197,7 +197,6 @@ namespace CryptLink.SigningFramework {
                 //Hash.SignatureCertHash = this.ComputedHash.Bytes;
 
                 using (var rsa = RSA.Create()) {
-                    RSAParameters rp = new RSAParameters();
                     rsa.ImportParameters(X509Certificate.GetRSAPrivateKey().ExportParameters(true));
 
                     Hash.SignatureBytes = rsa.SignData(Hash.Bytes, Provider.GetHashAlgorithmName(), RSASignaturePadding.Pkcs1);
@@ -215,7 +214,6 @@ namespace CryptLink.SigningFramework {
         /// <param name="Provider">The provider to use</param>
         public bool VerifyHash(Hash Hash, HashProvider Provider) {
             using (var rsa = RSA.Create()) {
-                RSAParameters rp = new RSAParameters();
                 rsa.ImportParameters(X509Certificate.GetRSAPublicKey().ExportParameters(false));
                 return rsa.VerifyData(Hash.Bytes, Hash.SignatureBytes, Provider.GetHashAlgorithmName(), RSASignaturePadding.Pkcs1);
             }

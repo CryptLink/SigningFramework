@@ -20,7 +20,7 @@ namespace CryptLink.SigningFramework {
             try {
                 Byte[] b = Convert.FromBase64String(B64EncodedBytes);
                 return b;
-            } catch (FormatException e) {
+            } catch (FormatException) {
                 return null;
             }
         }
@@ -127,25 +127,6 @@ namespace CryptLink.SigningFramework {
 
         }
 
-        /// <summary>
-        /// Gets the x509 certificate from a Uri
-        /// </summary>
-        /// <returns></returns>
-        public static X509Certificate2 GetCertFromUrl(Uri Uri) {
-            try {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                response.Close();
-                X509Certificate cert = request.ServicePoint.Certificate;
-                X509Certificate2 cert2 = new X509Certificate2(cert);
-
-                return cert2;
-            } catch (Exception ex) {
-                return null;
-            }
-
-        }
-
-
     }
+
 }
