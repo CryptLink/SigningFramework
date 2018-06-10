@@ -1,15 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <AssemblyName>CryptLink.SigningFrameworkTests</AssemblyName>
-
     <RootNamespace>CryptLink.SigningFrameworkTests</RootNamespace>
+    <Version>1.0.3</Version>
+    <Description />
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.2" />
@@ -17,11 +14,9 @@
     <PackageReference Include="NUnit" Version="3.10.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\SigningFramework.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="ca1.pfx_testonly_donotuse">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -48,5 +43,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
