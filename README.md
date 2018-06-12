@@ -7,7 +7,7 @@ Nuget package: [CryptLink.SigningFramework](https://www.nuget.org/packages/Crypt
 
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![Build status](https://ci.appveyor.com/api/projects/status/j9iof6d4cb7kaqal/branch/master?svg=true)](https://ci.appveyor.com/project/CryptLink/signingframework/branch/master)
-[![NuGet](https://img.shields.io/nuget/dt/CryptLink.SigningFramework.svg)](https://www.nuget.org/packages/CryptLink.SigningFramework/)
+[![NuGet](https://img.shields.io/nuget/v/CryptLink.SigningFramework.svg)](https://www.nuget.org/packages/CryptLink.SigningFramework/)
 
 ## Examples
 The signing framework strives to make common cryptography related tasks simple and extensible. We believe good security should be as simple as as their concepts, and extensible to any object.
