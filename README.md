@@ -3,6 +3,8 @@ A convenient signing and hashing framework, anything you can serialize, you can 
 
 Also provides a IComparable byte[] wrapper for efficient comparison and sorting and x509Certificate management features.
 
+Nuget package: [CryptLink.SigningFramework](https://www.nuget.org/packages/CryptLink.SigningFramework/)
+
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![Build status](https://ci.appveyor.com/api/projects/status/j9iof6d4cb7kaqal/branch/master?svg=true)](https://ci.appveyor.com/project/CryptLink/signingframework/branch/master)
 [![NuGet](https://img.shields.io/nuget/dt/CryptLink.SigningFramework.svg)](https://www.nuget.org/packages/CryptLink.SigningFramework/)
