@@ -6,16 +6,18 @@ using System.Text;
 namespace CryptLink.SigningFramework {
 
     /// <summary>
-    /// 
+    /// A implementation of ComparableBytes
     /// </summary>
-    public class Hash : ComparableBytesAbstract {
-        public HashProvider? Provider { get; set; }
+    public class Hash : ComparableBytes {
+        public HashProvider? Provider { get; private set; }
 
-        public override byte[] Bytes { get; set; }
+        //public override byte[] Bytes { get; private set; }
 
-        public byte[] SignatureBytes { get; set; }
+        public byte[] SignatureBytes { get; private set; }
 
-        public byte[] SignatureCertHash { get; set; }
+        public byte[] SignatureCertHash { get; private set; }
+
+        public DateTime ComputedDate { get; private set; }
 
         /// <summary>
         /// The number of bytes hashed to get this result
@@ -35,6 +37,7 @@ namespace CryptLink.SigningFramework {
                 Bytes = HashedBytes;
                 Provider = _Provider;
                 SourceByteLength = _SourceByteLength + HashedBytes.Length;
+                ComputedDate = DateTime.Now;
             } else {
                 throw new ArgumentException("The provided bytes are not the expected length, should be: "
                     + _Provider.GetProviderByteLength() +
@@ -115,7 +118,25 @@ namespace CryptLink.SigningFramework {
             Reasion = null;
             return true;
         }
-        
+
+        /// <summary>
+        /// Sign this hash with a certificate
+        /// </summary>
+        /// <param name="Hash">The hash to sign</param>
+        /// <param name="Provider">The provider to use</param>
+        public void Sign(HashProvider Provider, Cert Certificate) {
+            if (Certificate.HasPrivateKey && Bytes != null) {
+                using (var rsa = RSA.Create()) {
+                    rsa.ImportParameters(Certificate.X509Certificate.GetRSAPrivateKey().ExportParameters(true));
+
+                    SignatureBytes = rsa.SignData(Bytes, Provider.GetHashAlgorithmName(), RSASignaturePadding.Pkcs1);
+                    SignatureCertHash = Certificate.ComputedHash.Bytes;
+                }
+            } else {
+                throw new NullReferenceException("No private key");
+            }
+        }
+
         /// <summary>
         /// Verifies this hash is correct for the data provided, optionally checks the signature as well
         /// </summary>
@@ -208,7 +229,7 @@ namespace CryptLink.SigningFramework {
             var hash = new Hash(hashAlgo.ComputeHash(FromBytes), Provider, FromBytes.Length);
 
             if (SigningCert != null && SigningCert.HasPrivateKey) {
-                SigningCert.SignHash(hash, Provider);
+                hash.Sign(Provider, SigningCert);
             }
 
             return hash;
