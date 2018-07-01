@@ -4,7 +4,7 @@
     <IsPackable>false</IsPackable>
     <AssemblyName>CryptLink.SigningFrameworkTests</AssemblyName>
     <RootNamespace>CryptLink.SigningFrameworkTests</RootNamespace>
-    <Version>1.0.4</Version>
+    <Version>1.1.0</Version>
     <Description />
   </PropertyGroup>
   <ItemGroup>
