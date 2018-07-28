@@ -12,8 +12,8 @@ namespace CryptLinkTests {
         public void HashCreateOverloads() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
                 var h1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
-                var h1FromBytes = Hash.FromComputedBytes(h1.Bytes, provider, h1.SourceByteLength);
-                var h1FromB64 = Hash.FromB64(Utility.EncodeBytes(h1.Bytes), provider, h1.SourceByteLength);
+                var h1FromBytes = Hash.FromComputedBytes(h1.Bytes, provider, h1.SourceByteLength, DateTimeOffset.Now);
+                var h1FromB64 = Hash.FromB64(Utility.EncodeBytes(h1.Bytes), provider, h1.SourceByteLength, DateTimeOffset.Now);
 
                 Assert.AreEqual(h1.Bytes, h1FromBytes.Bytes, "Compared Bitwise");
                 Assert.True(h1 == h1FromBytes, "Compared with equality");
@@ -43,12 +43,12 @@ namespace CryptLinkTests {
                 
                 var tooLong = h1.Bytes.Concat(BitConverter.GetBytes(true)).ToArray();
                 Assert.Throws<ArgumentException>(delegate {
-                    var h1TooLong = Hash.FromComputedBytes(tooLong, provider, h1.SourceByteLength);
+                    var h1TooLong = Hash.FromComputedBytes(tooLong, provider, h1.SourceByteLength, DateTimeOffset.Now);
                 });
 
                 var tooShort = h1.Bytes.Take(h1.Bytes.Length - 1).ToArray();
                 Assert.Throws<ArgumentException>(delegate {
-                    var h1TooShort = Hash.FromComputedBytes(tooShort, provider, h1.SourceByteLength);
+                    var h1TooShort = Hash.FromComputedBytes(tooShort, provider, h1.SourceByteLength, DateTimeOffset.Now);
                 });
 
             }
@@ -91,16 +91,16 @@ namespace CryptLinkTests {
                 var h2 = Hash.Compute(tempGuid, provider);
                 var h3 = Hash.Compute(tempGuid.ToUpper(), provider);
 
-                byte[] maxBytes = new byte[h1.HashByteLength(true)];
-                byte[] minBytes = new byte[h1.HashByteLength(true)];
+                byte[] maxBytes = new byte[h1.HashByteLength()];
+                byte[] minBytes = new byte[h1.HashByteLength()];
 
                 for (var i = 0; i < maxBytes.Length; i++) {
                     maxBytes[i] = 255;
                     minBytes[i] = 0;
                 }
 
-                Hash max = Hash.FromComputedBytes(maxBytes, provider, 0);
-                Hash min = Hash.FromComputedBytes(minBytes, provider, 0);
+                Hash max = Hash.FromComputedBytes(maxBytes, provider, null, null);
+                Hash min = Hash.FromComputedBytes(minBytes, provider, null, null);
 
                 //All operators (hash to binary)
                 Assert.True(h1 == h2,
@@ -143,8 +143,8 @@ namespace CryptLinkTests {
                 var h2 = Hash.Compute(tempGuid, provider);
                 var h3 = Hash.Compute(tempGuid.ToUpper(), provider);
 
-                byte[] max = new byte[h1.HashByteLength(true)];
-                byte[] min = new byte[h1.HashByteLength(true)];
+                byte[] max = new byte[h1.HashByteLength()];
+                byte[] min = new byte[h1.HashByteLength()];
 
                 for (var i = 0; i < max.Length; i++) {
                     max[i] = 255;
@@ -192,16 +192,16 @@ namespace CryptLinkTests {
                 var h2 = Hash.Compute(tempGuid, provider);
                 var h3 = Hash.Compute(tempGuid.ToUpper(), provider);
 
-                byte[] maxBytes = new byte[h1.HashByteLength(true)];
-                byte[] minBytes = new byte[h1.HashByteLength(true)];
+                byte[] maxBytes = new byte[h1.HashByteLength()];
+                byte[] minBytes = new byte[h1.HashByteLength()];
 
                 for (var i = 0; i < maxBytes.Length; i++) {
                     maxBytes[i] = 255;
                     minBytes[i] = 0;
                 }
 
-                Hash max = Hash.FromComputedBytes(maxBytes, provider, 0);
-                Hash min = Hash.FromComputedBytes(minBytes, provider, 0);
+                Hash max = Hash.FromComputedBytes(maxBytes, provider, null, null);
+                Hash min = Hash.FromComputedBytes(minBytes, provider, null, null);
 
                 //All operators (hash to binary)
                 Assert.True(h1.Bytes == h2,

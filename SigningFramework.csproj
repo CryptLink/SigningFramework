@@ -9,7 +9,7 @@
 
 Also provides a IComparable byte[] wrapper for efficient comparison and sorting.</Description>
     <PackageProjectUrl>https://github.com/CryptLink/CryptLink.SigningFramework</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/CryptLink/CryptLink.SigningFramework</RepositoryUrl>
+    <RepositoryUrl>https://github.com/CryptLink/SigningFramework</RepositoryUrl>
     <PackageTags>hash, hashing, crypto, cryptography, signing, x509, cert, certificate, sha, sha265, sha384, sha512</PackageTags>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/37396837?s=200&amp;v=4</PackageIconUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
