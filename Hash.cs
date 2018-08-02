@@ -44,9 +44,10 @@ namespace CryptLink.SigningFramework {
                     " but was actually: " + HashedBytes.Length);
             }            
         }
-        
+
         /// <summary>
         /// Copies the bytes from a b64 string to a new Hash (does not compute a hash)
+        /// Accepts standard b64 or 'base64url' with URL and Filename Safe Alphabet (RFC 4648 §5, Table 2, value 62 = '-', 63 = '_') padding optional
         /// </summary>
         public static Hash FromB64(string Base64String, HashProvider _Provider, long? _SourceByteLength, DateTimeOffset? _ComputedDate) {
             var bytes = Utility.DecodeBytes(Base64String);
@@ -60,6 +61,10 @@ namespace CryptLink.SigningFramework {
         /// <param name="_Provider"></param>
         /// <returns></returns>
         public static Hash FromComputedBytes(byte[] PreComputedHashBytes, HashProvider _Provider, long? _SourceByteLength, DateTimeOffset? _ComputedDate) {
+            if (PreComputedHashBytes == null) {
+                throw new ArgumentNullException("The PreComputedHashBytes argument was null, can't create a Hash.");
+            } 
+
             if (PreComputedHashBytes.Length == _Provider.GetProviderByteLength()) {
                 return new Hash(PreComputedHashBytes, _Provider, _SourceByteLength, _ComputedDate);
             } else {
