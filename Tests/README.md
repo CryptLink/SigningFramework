@@ -5,7 +5,7 @@ Here lies the tests of SigningFramework, arbiter of good and bad code.
 ## About
 Tests use the Nunit framework, with a little help from dotnet. 
 
-### Command Line (Windows / Linux / Mac / more)
+### Command Line (All OSes)
 
 * Ensure that `dotnet` is installed, if not see: (https://www.microsoft.com/net/download)
 * Open a terminal and navigate to your local clone of SigningFramework
@@ -14,7 +14,6 @@ Tests use the Nunit framework, with a little help from dotnet.
 * Run tests with `dotnet test`
 
 You should see output similar, but not exactly like:
-
 ```
 Build started, please wait...
 Build completed.
