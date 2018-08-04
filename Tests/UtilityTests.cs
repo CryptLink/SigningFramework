@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using CryptLink.SigningFramework;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,20 @@ namespace CryptLink.SigningFrameworkTests
 
     [TestFixture()]
     class UtilityTests {
+
+        [Test(), Category("Utility")]
+        public void B64EncodeDecodeHash() {
+            foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
+                var hashed = new HashableString(Guid.NewGuid().ToString());
+                hashed.ComputeHash(provider, null);
+                var hash = hashed.ComputedHashBytes();
+
+                Assert.AreEqual(hash, DecodeBytes(EncodeBytes(hash, false, true), true));
+                Assert.AreEqual(hash, DecodeBytes(EncodeBytes(hash, true, false), false));
+                Assert.AreEqual(hash, DecodeBytes(EncodeBytes(hash, true, true), true));
+                Assert.AreEqual(hash, DecodeBytes(EncodeBytes(hash, false, false), false));
+            }
+        }
 
         [Test(), Category("Utility")]
         public void B64Padding() {
