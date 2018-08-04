@@ -1,4 +1,4 @@
-﻿# CryptLink.SigningFramework
+# CryptLink.SigningFramework
 A convenient signing and hashing framework, anything you can serialize, you can hash and sign. Allows for partial class hashing and custom implementations. 
 
 Also provides a IComparable byte[] wrapper for efficient comparison and sorting and x509Certificate management features.
@@ -65,7 +65,7 @@ using (X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine)
 ```
 
 ### Custom Hashing
-If the type you want to hash is not seralizable, or want to seralize the binary data in a specific way, you can override `GetHashableData()`
+If the type you want to hash is not serializable, or want to serialize the binary data in a specific way, you can override `GetHashableData()`
 
 ``` C#
 public new byte[] GetHashableData() {
@@ -73,7 +73,7 @@ public new byte[] GetHashableData() {
 }
 ```
 
-## Features / Clases
+## Features / Classes
 This library implements a number of classes, abstractions and interfaces, this list is in order of abstraction:
 
 ### IComparable
@@ -89,10 +89,10 @@ A minimal class for implementing `ComparableBytesAbstract`. Lowest level type in
 Implements `ComparableBytes` and adds features for computing the hash for arbitrary bytes. Intended for storing all hashes/signatures.
 
 ### IHashable
-Interface that defines the basic properties and functions needed to hash a object.
+Interface that defines the basic properties and functions needed to hash an object.
 
 ### Hashable
-Abstract that implements higher level functionality for computing and verifying hashes. Intended to be inherated by any object that wants to implemeting hashing.
+Abstract that implements higher level functionality for computing and verifying hashes. Intended to be inherited by any object that wants to implementing hashing.
 
 ## Implementations
 Some implementations of `Hashable` for utility, reference and convenience:
