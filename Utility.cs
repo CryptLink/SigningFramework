@@ -58,7 +58,7 @@ namespace CryptLink.SigningFramework {
                 return null;
             }
 
-            B64EncodedBytes = B64EncodedBytes.Replace("_", "/").Replace("-", "+").Replace('~', '"');
+            B64EncodedBytes = B64EncodedBytes.Replace("_", "/").Replace("-", "+").Replace('~', '=');
 
             if (EnforcePadding == false) {
                 switch (B64EncodedBytes.Length % 4) {
