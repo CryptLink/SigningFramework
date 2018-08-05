@@ -15,7 +15,7 @@ Also provides a IComparable byte[] wrapper for efficient comparison and sorting.
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl>https://github.com/CryptLink/SigningFramework/blob/master/LICENSE.md</PackageLicenseUrl>
     <Copyright>LGPL v3</Copyright>
-    <Version>1.2.2</Version>
+    <Version>1.2.3</Version>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Examples\**" />
