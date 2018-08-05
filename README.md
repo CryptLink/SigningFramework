@@ -12,7 +12,16 @@ Nuget package: [CryptLink.SigningFramework](https://www.nuget.org/packages/Crypt
 ## Examples
 The signing framework strives to make common cryptography related tasks simple and extensible. We believe good security should be as simple as as their concepts, and extensible to any object.
 
-### Hashing
+### Simple Example
+Hashing any object that implements IHashable:
+``` C#
+    var h1 = new HashableString("Test Value");
+    h1.ComputeHash(HashProvider.SHA256);
+```
+
+### Full Example
+Below is a full example that defines a new object, and a program that computes a hash.
+
 ``` C#
 using System;
 using CryptLink.SigningFramework;

@@ -10,12 +10,39 @@ namespace CryptLink.SigningFramework {
 
         public HashableBytes() { }
 
+        /// <summary>
+        /// Creates a hashable bytes, does not compute the hash
+        /// </summary>
         public HashableBytes(byte[] _Value) {
             if (_Value == null) {
                 throw new ArgumentNullException("The provided byte[] can't be null");
             }
 
             Value = _Value;
+        }
+
+        /// <summary>
+        /// Creates a hashable bytes, computes the hash immediately
+        /// </summary>
+        public HashableBytes(byte[] _Value, HashProvider Provider) {
+            if (_Value == null) {
+                throw new ArgumentNullException("The provided byte[] can't be null");
+            }
+
+            Value = _Value;
+            this.ComputeHash(Provider);
+        }
+
+        /// <summary>
+        /// Creates a hashable bytes, computes the hash and signs immediately
+        /// </summary>
+        public HashableBytes(byte[] _Value, HashProvider Provider, Cert SigningCert) {
+            if (_Value == null) {
+                throw new ArgumentNullException("The provided byte[] can't be null");
+            }
+
+            Value = _Value;
+            this.ComputeHash(Provider, SigningCert);
         }
 
         public byte[] Value { get; protected set; }
