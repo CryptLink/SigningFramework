@@ -6,21 +6,23 @@ using System.Text;
 namespace CryptLink.SigningFramework {
 
     /// <summary>
-    /// 
+    /// A implementation of ComparableBytes
     /// </summary>
-    public class Hash : ComparableBytesAbstract {
-        public HashProvider? Provider { get; set; }
+    public class Hash : ComparableBytes {
+        public HashProvider? Provider { get; private set; }
 
-        public override byte[] Bytes { get; set; }
+        //public override byte[] Bytes { get; private set; }
 
-        public byte[] SignatureBytes { get; set; }
+        public byte[] SignatureBytes { get; private set; }
 
-        public byte[] SignatureCertHash { get; set; }
+        public byte[] SignatureCertHash { get; private set; }
+
+        public DateTimeOffset? ComputedDate { get; private set; }
 
         /// <summary>
         /// The number of bytes hashed to get this result
         /// </summary>
-        public int SourceByteLength { get; private set; }
+        public long? SourceByteLength { get; private set; }
         
         public Hash() { }
 
@@ -29,25 +31,27 @@ namespace CryptLink.SigningFramework {
         /// </summary>
         /// <param name="HashedBytes">The bytes to copy into this hash</param>
         /// <param name="_Provider"></param>
-        private Hash(byte[] HashedBytes, HashProvider _Provider, int _SourceByteLength) {
+        private Hash(byte[] HashedBytes, HashProvider _Provider, long? _SourceByteLength, DateTimeOffset? _ComputedDate) {
 
             if (HashedBytes.Length == _Provider.GetProviderByteLength()) {
                 Bytes = HashedBytes;
                 Provider = _Provider;
                 SourceByteLength = _SourceByteLength + HashedBytes.Length;
+                ComputedDate = DateTime.Now;
             } else {
                 throw new ArgumentException("The provided bytes are not the expected length, should be: "
                     + _Provider.GetProviderByteLength() +
                     " but was actually: " + HashedBytes.Length);
             }            
         }
-        
+
         /// <summary>
         /// Copies the bytes from a b64 string to a new Hash (does not compute a hash)
+        /// Accepts standard b64 or 'base64url' with URL and Filename Safe Alphabet (RFC 4648 §5, Table 2, value 62 = '-', 63 = '_') padding optional
         /// </summary>
-        public static Hash FromB64(string Base64String, HashProvider _Provider, int SourceBytesLength) {
+        public static Hash FromB64(string Base64String, HashProvider _Provider, long? _SourceByteLength, DateTimeOffset? _ComputedDate) {
             var bytes = Utility.DecodeBytes(Base64String);
-            return FromComputedBytes(bytes, _Provider, SourceBytesLength);
+            return FromComputedBytes(bytes, _Provider, _SourceByteLength, _ComputedDate);
         }
 
         /// <summary>
@@ -56,9 +60,13 @@ namespace CryptLink.SigningFramework {
         /// <param name="PreComputedHashBytes"></param>
         /// <param name="_Provider"></param>
         /// <returns></returns>
-        public static Hash FromComputedBytes(byte[] PreComputedHashBytes, HashProvider _Provider, int SourceBytesLength) {
+        public static Hash FromComputedBytes(byte[] PreComputedHashBytes, HashProvider _Provider, long? _SourceByteLength, DateTimeOffset? _ComputedDate) {
+            if (PreComputedHashBytes == null) {
+                throw new ArgumentNullException("The PreComputedHashBytes argument was null, can't create a Hash.");
+            } 
+
             if (PreComputedHashBytes.Length == _Provider.GetProviderByteLength()) {
-                return new Hash(PreComputedHashBytes, _Provider, SourceBytesLength);
+                return new Hash(PreComputedHashBytes, _Provider, _SourceByteLength, _ComputedDate);
             } else {
                 throw new ArgumentException("Provided bytes were not the expected length for this hash type");
             }
@@ -67,7 +75,7 @@ namespace CryptLink.SigningFramework {
         /// <summary>
         /// Gets the number of bytes for the current hash provider
         /// </summary>
-        public int HashByteLength(bool ZeroIndexed) {
+        public int HashByteLength() {
             if (!Provider.HasValue) {
                 throw new NullReferenceException("Provider is not set to a value");
             }
@@ -115,7 +123,25 @@ namespace CryptLink.SigningFramework {
             Reasion = null;
             return true;
         }
-        
+
+        /// <summary>
+        /// Sign this hash with a certificate
+        /// </summary>
+        /// <param name="Hash">The hash to sign</param>
+        /// <param name="Provider">The provider to use</param>
+        public void Sign(HashProvider Provider, Cert Certificate) {
+            if (Certificate.HasPrivateKey && Bytes != null) {
+                using (var rsa = RSA.Create()) {
+                    rsa.ImportParameters(Certificate.X509Certificate.GetRSAPrivateKey().ExportParameters(true));
+
+                    SignatureBytes = rsa.SignData(Bytes, Provider.GetHashAlgorithmName(), RSASignaturePadding.Pkcs1);
+                    SignatureCertHash = Certificate.ComputedHash.Bytes;
+                }
+            } else {
+                throw new NullReferenceException("No private key");
+            }
+        }
+
         /// <summary>
         /// Verifies this hash is correct for the data provided, optionally checks the signature as well
         /// </summary>
@@ -205,10 +231,10 @@ namespace CryptLink.SigningFramework {
             }
 
             HashAlgorithm hashAlgo = Provider.GetHashAlgorithm();
-            var hash = new Hash(hashAlgo.ComputeHash(FromBytes), Provider, FromBytes.Length);
+            var hash = new Hash(hashAlgo.ComputeHash(FromBytes), Provider, FromBytes.Length, DateTimeOffset.Now);
 
             if (SigningCert != null && SigningCert.HasPrivateKey) {
-                SigningCert.SignHash(hash, Provider);
+                hash.Sign(Provider, SigningCert);
             }
 
             return hash;

@@ -10,6 +10,9 @@ namespace CryptLink.SigningFramework {
 
         public HashableString() { }
 
+        /// <summary>
+        /// Creates a hashable string, does not compute the value
+        /// </summary>
         public HashableString(string _Value) {
             if (_Value == null) {
                 throw new ArgumentNullException("The provided string can't be null");
@@ -17,6 +20,31 @@ namespace CryptLink.SigningFramework {
 
             Value = _Value;
         }
+
+        /// <summary>
+        /// Creates a hashable string and computes the hash immediately 
+        /// </summary>
+        public HashableString(string _Value, HashProvider Provider) {
+            if (_Value == null) {
+                throw new ArgumentNullException("The provided string can't be null");
+            }
+
+            Value = _Value;
+            this.ComputeHash(Provider);
+        }
+
+        /// <summary>
+        /// Creates a hashable string and computes the hash and signs immediately 
+        /// </summary>
+        public HashableString(string _Value, HashProvider Provider, Cert SigningCert) {
+            if (_Value == null) {
+                throw new ArgumentNullException("The provided string can't be null");
+            }
+
+            Value = _Value;
+            this.ComputeHash(Provider, SigningCert);
+        }
+
 
         string _value;
         public string Value {

@@ -5,22 +5,76 @@ using System.Security.Cryptography.X509Certificates;
 namespace CryptLink.SigningFramework {
     public class Utility {
 
+        /// <summary>
+        /// Encode bytes to b64 in standard RFC 4648 format with padding, standard characters
+        /// </summary>
         public static string EncodeBytes(byte[] Bytes) {
+            return EncodeBytes(Bytes, false, true);
+        }
+
+        /// <summary>
+        /// Encode bytes to b64 in standard RFC 4648 format with optional padding and characters
+        /// </summary>
+        public static string EncodeBytes(byte[] Bytes, bool UrlSafe, bool IncludePadding) {
             if (Bytes == null) {
                 return null;
             }
-            return Convert.ToBase64String(Bytes, 0, Bytes.Length);
+            var output = Convert.ToBase64String(Bytes, 0, Bytes.Length);
+
+            if (IncludePadding == false) {
+                output = output.TrimEnd('=');
+            }
+
+            if (UrlSafe) {
+                output = output.Replace('+', '-').Replace('/', '_');
+            }
+
+            return output;
         }
 
+        /// <summary>
+        /// Decodes B64 bytes, accepts standard b64 or 'base64url' with URL and Filename Safe Alphabet 
+        /// Per RFC 4648 §5, Table 2:
+        ///     value 62: '-' or '+' 
+        ///     value 63: '_' or '/' 
+        ///     Enforced padding: '=', '~'
+        /// </summary>
+        /// <returns></returns>
         public static byte[] DecodeBytes(string B64EncodedBytes) {
+            return DecodeBytes(B64EncodedBytes, true);
+        }
+
+        /// <summary>
+        /// Decodes B64 bytes, accepts standard b64 or 'base64url' with URL and Filename Safe Alphabet 
+        /// Per RFC 4648 §5, Table 2:
+        ///     value 62: '-' or '+' 
+        ///     value 63: '_' or '/' 
+        ///     Optional padding: '=', '~'
+        /// </summary>
+        /// <param name="EnforcePadding">If true, padding is required, if false it is optional</param>
+        /// <returns></returns>
+        public static byte[] DecodeBytes(string B64EncodedBytes, bool EnforcePadding) {
             if (string.IsNullOrWhiteSpace(B64EncodedBytes)) {
                 return null;
+            }
+
+            B64EncodedBytes = B64EncodedBytes.Replace("_", "/").Replace("-", "+").Replace('~', '=');
+
+            if (EnforcePadding == false) {
+                switch (B64EncodedBytes.Length % 4) {
+                    case 3:
+                        B64EncodedBytes += "=";
+                        break;
+                    case 2:
+                        B64EncodedBytes += "==";
+                        break;
+                }
             }
 
             try {
                 Byte[] b = Convert.FromBase64String(B64EncodedBytes);
                 return b;
-            } catch (FormatException) {
+            } catch (FormatException fx) {
                 return null;
             }
         }

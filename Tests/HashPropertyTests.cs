@@ -44,7 +44,7 @@ namespace CryptLink.SigningFrameworkTests
 
             testObject.ComputeHash(HashProvider.SHA256);
             var testHash1 = testObject.ComputedHash;
-            var expectedHash = Hash.FromB64(@"qqwUNwkqmNSmvTu6aOuG6e0JoKVa9de1xeFFFQVLT7c=", HashProvider.SHA256, testObjectBytes.Length);
+            var expectedHash = Hash.FromB64(@"qqwUNwkqmNSmvTu6aOuG6e0JoKVa9de1xeFFFQVLT7c=", HashProvider.SHA256, testObjectBytes.Length, null);
             Assert.AreEqual(expectedHash, testHash1);
 
             testObject.IntUnhashed = -1;

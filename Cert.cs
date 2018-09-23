@@ -186,28 +186,6 @@ namespace CryptLink.SigningFramework {
         }
 
         /// <summary>
-        /// Use this cert to sign a hash
-        /// </summary>
-        /// <param name="Hash">The hash to sign</param>
-        /// <param name="Provider">The provider to use</param>
-        public void SignHash(Hash Hash, HashProvider Provider) {
-            if (X509Certificate.HasPrivateKey && Hash.Bytes != null) {
-                //var csp = RSA.Create();//(RSACryptoServiceProvider)X509Certificate.PrivateKey;
-                //Hash.SignatureBytes = csp.SignHash(Hash.Bytes, Provider.GetOID().Value);
-                //Hash.SignatureCertHash = this.ComputedHash.Bytes;
-
-                using (var rsa = RSA.Create()) {
-                    rsa.ImportParameters(X509Certificate.GetRSAPrivateKey().ExportParameters(true));
-
-                    Hash.SignatureBytes = rsa.SignData(Hash.Bytes, Provider.GetHashAlgorithmName(), RSASignaturePadding.Pkcs1);
-                    Hash.SignatureCertHash = this.ComputedHash.Bytes;
-                }
-            } else {
-                throw new NullReferenceException("No private key");
-            }
-        }
-
-        /// <summary>
         /// Use this cert to verify a hash
         /// </summary>
         /// <param name="Hash">The hash to verify</param>
