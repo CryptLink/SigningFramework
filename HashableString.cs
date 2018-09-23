@@ -4,7 +4,7 @@ using System.Text;
 namespace CryptLink.SigningFramework {
 
     /// <summary>
-    /// A immutable string that can easily be hashed
+    /// A string that can easily be hashed
     /// </summary>
     public class HashableString : Hashable {
 
@@ -17,8 +17,17 @@ namespace CryptLink.SigningFramework {
 
             Value = _Value;
         }
-        
-        public string Value { get; protected set; }
+
+        string _value;
+        public string Value {
+            get { return _value; }
+            set {
+                if (value != _value) {
+                    this.ComputedHash = null;
+                    _value = value;
+                }
+            }
+        }
 
         public override byte[] GetHashableData() {
             return Encoding.ASCII.GetBytes(Value);

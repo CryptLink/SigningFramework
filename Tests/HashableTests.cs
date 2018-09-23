@@ -24,6 +24,7 @@ namespace CryptLinkTests {
                 var h1d = Newtonsoft.Json.JsonConvert.DeserializeObject<HashableString>(h1s);
 
                 Assert.AreEqual(h1.ComputedHash, h1d.ComputedHash);
+                Assert.AreEqual(h1.Value, h1d.Value);
             }
         }
 
@@ -34,9 +35,10 @@ namespace CryptLinkTests {
                 var h1 = new HashableBytes(Guid.NewGuid().ToByteArray());
                 h1.ComputeHash(provider);
                 var h1s = Newtonsoft.Json.JsonConvert.SerializeObject(h1);
-                var h1d = Newtonsoft.Json.JsonConvert.DeserializeObject<HashableString>(h1s);
+                var h1d = Newtonsoft.Json.JsonConvert.DeserializeObject<HashableBytes>(h1s);
 
                 Assert.AreEqual(h1.ComputedHash, h1d.ComputedHash);
+                Assert.AreEqual(h1.Value, h1d.Value);
             }
         }
 
@@ -63,6 +65,7 @@ namespace CryptLinkTests {
 
                 Assert.AreEqual(computedHashString, precomputedTestHash, "Computed and stored hash differ, the hash of 'Test' should never change");
                 Assert.AreNotEqual(h.ComputedHash, h2.ComputedHash, "Slightly different strings hash differently");
+                Assert.AreNotEqual(h.Value, h2.Value, "Slightly different strings hash differently");
 
             }
 
