@@ -23,6 +23,26 @@ namespace CryptLinkTests {
                 var h1s = Newtonsoft.Json.JsonConvert.SerializeObject(h1);
                 var h1d = Newtonsoft.Json.JsonConvert.DeserializeObject<HashableString>(h1s);
 
+                //verify before recomputing
+                Assert.IsTrue(h1.Verify());
+                Assert.IsTrue(h1d.Verify());
+
+                //check that the hash (and other fields) have not changed
+                Assert.AreEqual(h1.ComputedHash, h1d.ComputedHash);
+                Assert.AreEqual(h1.ComputedHash.ComputedDate, h1d.ComputedHash.ComputedDate);
+                Assert.AreEqual(h1.ComputedHash.Bytes, h1d.ComputedHash.Bytes);
+                Assert.AreEqual(h1.ComputedHash.HashByteLength(), h1d.ComputedHash.HashByteLength());
+                Assert.AreEqual(h1.ComputedHash.Provider, h1d.ComputedHash.Provider);
+                Assert.AreEqual(h1.ComputedHash.SourceByteLength, h1d.ComputedHash.SourceByteLength);
+                Assert.AreEqual(h1.Value, h1d.Value);
+
+                //verify after recomputing
+                h1.ComputeHash(provider);
+                h1d.ComputeHash(provider);
+                Assert.IsTrue(h1.Verify());
+                Assert.IsTrue(h1d.Verify());
+
+                //check that the hash has not changed
                 Assert.AreEqual(h1.ComputedHash, h1d.ComputedHash);
                 Assert.AreEqual(h1.Value, h1d.Value);
             }
@@ -37,6 +57,21 @@ namespace CryptLinkTests {
                 var h1s = Newtonsoft.Json.JsonConvert.SerializeObject(h1);
                 var h1d = Newtonsoft.Json.JsonConvert.DeserializeObject<HashableBytes>(h1s);
 
+                //verify before recomputing
+                Assert.IsTrue(h1.Verify());
+                Assert.IsTrue(h1d.Verify());
+
+                //check that the hash has not changed
+                Assert.AreEqual(h1.ComputedHash, h1d.ComputedHash);
+                Assert.AreEqual(h1.Value, h1d.Value);
+
+                //verify after recomputing
+                h1.ComputeHash(provider);
+                h1d.ComputeHash(provider);
+                Assert.IsTrue(h1.Verify());
+                Assert.IsTrue(h1d.Verify());
+
+                //check that the hash has not changed
                 Assert.AreEqual(h1.ComputedHash, h1d.ComputedHash);
                 Assert.AreEqual(h1.Value, h1d.Value);
             }
