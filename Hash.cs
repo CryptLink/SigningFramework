@@ -86,7 +86,7 @@ namespace CryptLink.SigningFramework {
                 Bytes = HashedBytes;
                 Provider = _Provider;
                 SourceByteLength = _SourceByteLength + HashedBytes.Length;
-                ComputedDate = DateTime.Now;
+                ComputedDate = _ComputedDate;
             } else {
                 throw new ArgumentException("The provided bytes are not the expected length, should be: "
                     + _Provider.GetProviderByteLength() +
