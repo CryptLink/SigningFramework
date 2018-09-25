@@ -1,4 +1,12 @@
-﻿## 1.3.0
+﻿## 1.3.2
+Adding: ByteExtentions - byte[].ToComparable()
+Updating: readme
+Adding: Simple ComprableByte unit test
+
+## 1.3.1
+Bugfix: hash create methods to respect the provided ComputedDate
+
+## 1.3.0
 Adjusting the value set/get in HashableString and HashableByte
 
 ## 1.2.0

@@ -1,7 +1,7 @@
 # CryptLink.SigningFramework
 A convenient signing and hashing framework, anything you can serialize, you can hash and sign. Allows for partial class hashing and custom implementations. 
 
-Also provides a IComparable byte[] wrapper for efficient comparison and sorting and x509Certificate management features.
+Also provides a IComparable byte[] wrapper for efficient comparison (`Hash.Compare(byte[], byte[])`) and sorting and x509Certificate management features.
 
 Nuget package: [CryptLink.SigningFramework](https://www.nuget.org/packages/CryptLink.SigningFramework/)
 
@@ -12,15 +12,15 @@ Nuget package: [CryptLink.SigningFramework](https://www.nuget.org/packages/Crypt
 ## Examples
 The signing framework strives to make common cryptography related tasks simple and extensible. We believe good security should be as simple as as their concepts, and extensible to any object.
 
-### Simple Example
+### Simple Hashing Example
 Hashing any object that implements IHashable:
 ``` C#
     var h1 = new HashableString("Test Value");
     h1.ComputeHash(HashProvider.SHA256);
 ```
 
-### Full Example
-Below is a full example that defines a new object, and a program that computes a hash.
+### Custom Hashing Example
+Below is a full example that defines a new partially hashed object, and a program that uses it.
 
 ``` C#
 using System;
@@ -42,10 +42,8 @@ namespace CryptLink.SigningFrameworkExamples
 		public int PurchaseCount { get; set; }
 	}
 
-    class Program
-    {
-        static void Main(string[] args)
-        {
+    class Program {
+        static void Main(string[] args) {
             var widget = new HashableWidgetExample() {
                 ID = 1,
                 Name = "Widget",
@@ -80,6 +78,33 @@ If the type you want to hash is not serializable, or want to serialize the binar
 public new byte[] GetHashableData() {
 	//Return the hashable bytes here
 }
+```
+
+### Comparing byte[]
+Dotnet does not have a native way to compare the contents of two byte[] array contents, but the `ComparableBytes` does:
+
+``` C#
+    byte[] bytesA = { 1, 2, 3 };
+    byte[] bytesB = { 1, 2, 3 };
+
+    // Standard compare (by reference)
+    if (bytesA == bytesB) {
+        // Evaluates as false (A and B are different objects)
+        Assert.Fail();
+    }
+
+    // using CryptLink.SigningFramework;
+    if (bytesA.ToComparable() == bytesB.ToComparable()) {
+        // Evaluates as true (A and B have the same byte values)
+    }
+
+    // Using the ComparableBytes Wrapper
+    var cBytesA = new ComparableBytes(bytesA);
+    var cBytesB = new ComparableBytes(bytesB);
+
+    if (cBytesA == cBytesB) {
+        // Evaluates as true (A and B have the same byte values)
+    }
 ```
 
 ## Features / Classes

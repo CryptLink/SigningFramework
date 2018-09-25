@@ -59,7 +59,6 @@ namespace CryptLinkTests {
             }
         }
 
-
         [Test(), Category("Hash Compare")]
         public void HashCompareString() {
 
