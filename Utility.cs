@@ -83,7 +83,7 @@ namespace CryptLink.SigningFramework {
             try {
                 X509Store store = new X509Store(st, sl);
                 store.Open(OpenFlags.ReadWrite);
-                store.Add(cert.X509Certificate);
+                store.Add(cert.GetX509Certificate());
 
                 store.Close();
                 return true;

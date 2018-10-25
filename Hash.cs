@@ -132,7 +132,7 @@ namespace CryptLink.SigningFramework {
         public void Sign(HashProvider Provider, Cert Certificate) {
             if (Certificate.HasPrivateKey && Bytes != null) {
                 using (var rsa = RSA.Create()) {
-                    rsa.ImportParameters(Certificate.X509Certificate.GetRSAPrivateKey().ExportParameters(true));
+                    rsa.ImportParameters(Certificate.GetX509Certificate().GetRSAPrivateKey().ExportParameters(true));
 
                     SignatureBytes = rsa.SignData(Bytes, Provider.GetHashAlgorithmName(), RSASignaturePadding.Pkcs1);
                     SignatureCertHash = Certificate.ComputedHash.Bytes;
