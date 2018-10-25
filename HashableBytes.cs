@@ -45,7 +45,16 @@ namespace CryptLink.SigningFramework {
             this.ComputeHash(Provider, SigningCert);
         }
 
-        public byte[] Value { get; protected set; }
+        byte[] _value;
+        public byte[] Value {
+            get { return _value; }
+            set {
+                if (value != _value) {
+                    this.ComputedHash = null;
+                    _value = value;
+                }
+            }
+        }
 
         public override byte[] GetHashableData() {
             return Value;

@@ -9,20 +9,69 @@ namespace CryptLink.SigningFramework {
     /// A implementation of ComparableBytes
     /// </summary>
     public class Hash : ComparableBytes {
-        public HashProvider? Provider { get; private set; }
 
-        //public override byte[] Bytes { get; private set; }
+        HashProvider? _provider;
+        public HashProvider? Provider {
+            get => _provider;
+            set {
+                if (_provider == null) {
+                    _provider = value;
+                } else {
+                    throw new FieldAccessException("Provider can only be set once.");
+                }
+            }
+        }
 
-        public byte[] SignatureBytes { get; private set; }
+        byte[] _signatureBytes;
+        public byte[] SignatureBytes {
+            get =>_signatureBytes;
+            set {
+                if (_signatureBytes == null) {
+                    _signatureBytes = value;
+                } else {
+                    throw new FieldAccessException("SignatureBytes can only be set once.");
+                }
+            }
+        }
 
-        public byte[] SignatureCertHash { get; private set; }
+        byte[] _signatureCertHash;
+        public byte[] SignatureCertHash {
+            get => _signatureCertHash;
+            set {
+                if (_signatureCertHash == null) {
+                    _signatureCertHash = value;
+                } else {
+                    throw new FieldAccessException("SignatureCertHash can only be set once.");
+                }
+            }
+        }
 
-        public DateTimeOffset? ComputedDate { get; private set; }
+        DateTimeOffset? _computedDate;
+        public DateTimeOffset? ComputedDate {
+            get => _computedDate;
+            set {
+                if (_computedDate == null) {
+                    _computedDate = value;
+                } else {
+                    throw new FieldAccessException("ComputedDate can only be set once.");
+                }
+            }
+        }
 
         /// <summary>
         /// The number of bytes hashed to get this result
         /// </summary>
-        public long? SourceByteLength { get; private set; }
+        long? _sourceByteLength;
+        public long? SourceByteLength {
+            get => _sourceByteLength;
+            set {
+                if (_sourceByteLength == null) {
+                    _sourceByteLength = value;
+                } else {
+                    throw new FieldAccessException("SourceByteLength can only be set once.");
+                }
+            }
+        }
         
         public Hash() { }
 
@@ -37,7 +86,7 @@ namespace CryptLink.SigningFramework {
                 Bytes = HashedBytes;
                 Provider = _Provider;
                 SourceByteLength = _SourceByteLength + HashedBytes.Length;
-                ComputedDate = DateTime.Now;
+                ComputedDate = _ComputedDate;
             } else {
                 throw new ArgumentException("The provided bytes are not the expected length, should be: "
                     + _Provider.GetProviderByteLength() +

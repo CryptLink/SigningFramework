@@ -13,7 +13,7 @@ namespace CryptLink.SigningFramework {
         }
 
         /// <summary>
-        /// Encode bytes to b64 in standard RFC 4648 format with optional padding and characters
+        /// Encode bytes to b64 in standard or RFC-4648 base64url (url safe) format, padding optional
         /// </summary>
         public static string EncodeBytes(byte[] Bytes, bool UrlSafe, bool IncludePadding) {
             if (Bytes == null) {
@@ -33,7 +33,7 @@ namespace CryptLink.SigningFramework {
         }
 
         /// <summary>
-        /// Decodes B64 bytes, accepts standard b64 or 'base64url' with URL and Filename Safe Alphabet 
+        /// Decodes B64 bytes, accepts standard 'b64' or RFC-4648 'base64url' format, padding enforced
         /// Per RFC 4648 §5, Table 2:
         ///     value 62: '-' or '+' 
         ///     value 63: '_' or '/' 
@@ -45,7 +45,7 @@ namespace CryptLink.SigningFramework {
         }
 
         /// <summary>
-        /// Decodes B64 bytes, accepts standard b64 or 'base64url' with URL and Filename Safe Alphabet 
+        /// Decodes B64 bytes, accepts standard 'b64' or RFC-4648 'base64url' format, padding optinal
         /// Per RFC 4648 §5, Table 2:
         ///     value 62: '-' or '+' 
         ///     value 63: '_' or '/' 

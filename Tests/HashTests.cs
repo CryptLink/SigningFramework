@@ -11,15 +11,20 @@ namespace CryptLinkTests {
         [Test(), Category("Hashing")]
         public void HashCreateOverloads() {
             foreach (HashProvider provider in Enum.GetValues(typeof(HashProvider))) {
+
                 var h1 = Hash.Compute(Guid.NewGuid().ToString(), provider);
-                var h1FromBytes = Hash.FromComputedBytes(h1.Bytes, provider, h1.SourceByteLength, DateTimeOffset.Now);
-                var h1FromB64 = Hash.FromB64(Utility.EncodeBytes(h1.Bytes), provider, h1.SourceByteLength, DateTimeOffset.Now);
+                var h1FromBytes = Hash.FromComputedBytes(h1.Bytes, provider, h1.SourceByteLength, h1.ComputedDate);
+                var h1FromB64 = Hash.FromB64(Utility.EncodeBytes(h1.Bytes), provider, h1.SourceByteLength, h1.ComputedDate);
 
                 Assert.AreEqual(h1.Bytes, h1FromBytes.Bytes, "Compared Bitwise");
                 Assert.True(h1 == h1FromBytes, "Compared with equality");
+                Assert.True(h1.ComputedDate == h1FromBytes.ComputedDate, "Date is correct");
+                Assert.True(h1.Provider == h1FromBytes.Provider, "Provider is correct");
 
                 Assert.AreEqual(h1.Bytes, h1FromB64.Bytes, "Compared Bitwise");
                 Assert.True(h1 == h1FromB64, "Compared with equality");
+                Assert.True(h1.ComputedDate == h1FromB64.ComputedDate, "Date is correct");
+                Assert.True(h1.Provider == h1FromB64.Provider, "Provider is correct");
             }
         }
 
@@ -53,7 +58,6 @@ namespace CryptLinkTests {
 
             }
         }
-
 
         [Test(), Category("Hash Compare")]
         public void HashCompareString() {
