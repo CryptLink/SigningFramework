@@ -1,4 +1,8 @@
-﻿## 1.3.3
+﻿
+## 1.4.0
+Moving Cert.X509Certificate2 into a method to simpilify seralization
+
+## 1.3.3
 Adding: ByteExtentions - byte[].ToComparable()
 Updating: readme
 Adding: Simple ComprableByte unit test
