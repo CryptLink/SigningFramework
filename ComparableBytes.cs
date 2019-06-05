@@ -16,10 +16,18 @@ namespace CryptLink.SigningFramework {
         }
 
         /// <summary>
-        /// Returns a basic B64 representation of the hash
+        /// Returns a base B64 representation of the hash
         /// </summary>
         /// <returns></returns>
         public override string ToString() {
+            return Convert.ToBase64String(Bytes);
+        }
+
+        /// <summary>
+        /// Returns a Base 64 representation of the hash
+        /// </summary>
+        /// <returns></returns>
+        public string ToB64String() {
             return Convert.ToBase64String(Bytes);
         }
 
