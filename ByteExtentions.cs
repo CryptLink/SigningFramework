@@ -7,5 +7,13 @@ namespace CryptLink.SigningFramework {
         public static ComparableBytes ToComparable(this byte[] Bytes) {
             return new ComparableBytes(Bytes);
         }
+
+        public static string ToB64String(this byte[] Bytes) {
+            return Convert.ToBase64String(Bytes);
+        }
+
+        public static string ToB64String(this byte[] Bytes, bool UrlSafe, bool IncludePadding) {
+            return Utility.EncodeBytes(Bytes, UrlSafe, IncludePadding);
+        }
     }
 }
