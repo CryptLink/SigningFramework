@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -194,6 +195,46 @@ namespace CryptLink.SigningFramework {
         /// <summary>
         /// Verifies this hash is correct for the data provided, optionally checks the signature as well
         /// </summary>
+        /// <param name="DataStream">Stream to hash</param>
+        /// <param name="SigningCert">Certificate to check the signature against</param>
+        /// <returns></returns>
+        public bool Verify(Stream DataStream, out string Reasion, Cert SigningCert = null) {
+            if (!Provider.HasValue) {
+                throw new NullReferenceException("Provider is not set to a value");
+            }
+
+            if (HashLengthValid(out Reasion, SigningCert?.PublicKey?.Key?.KeySize) == false) {
+                return false;
+            }
+
+            if (this.SignatureBytes != null) {
+                if (SigningCert != null) {
+                    if (!SigningCert.VerifyHash(this, this.Provider.Value)) {
+                        Reasion = "The hash signature is invalid";
+                        return false;
+                    }
+                } else {
+                    //must have the signing cert and the signature bytes
+                    Reasion = "The hash is signed, but no signing cert was provided";
+                    return false;
+                }
+            }
+
+            //actually check the hash
+            var computed = Compute(DataStream, this.Provider.Value, default(Cert));
+
+            if (this != computed) {
+                Reasion = "Computed hash does not match the provided hash";
+                return false;
+            }
+
+            Reasion = null;
+            return true;
+        }
+
+        /// <summary>
+        /// Verifies this hash is correct for the data provided, optionally checks the signature as well
+        /// </summary>
         /// <param name="DataBytes">Data to hash</param>
         /// <param name="SigningCert">Certificate to check the signature against</param>
         /// <returns></returns>
@@ -232,15 +273,60 @@ namespace CryptLink.SigningFramework {
         }
 
         /// <summary>
+        /// Computes a hash from a stream
+        /// </summary>
+        /// <param name="FromStream">The stream to hash</param>
+        /// <param name="Provider">The provider to hash with</param>
+        /// <returns>A new Hash object</returns>
+        public static Hash Compute(Stream FromStream, HashProvider Provider) {
+            return Compute(FromStream, Provider, null);
+        }
+
+        /// <summary>
+        /// Computes a hash from a stream
+        /// </summary>
+        /// <param name="FromStream">The stream to hash</param>
+        /// <param name="Provider">The provider to hash with</param>
+        /// <param name="SigningCert">The certificate to sign the hash with</param>
+        /// <returns>A new Hash object</returns>
+        public static Hash Compute(Stream FromStream, HashProvider Provider, X509Certificate2 SigningCert) {
+            return Compute(FromStream, Provider, new Cert(SigningCert));
+        }
+
+        /// <summary>
+        /// Computes a hash from a stream
+        /// </summary>
+        /// <param name="FromStream">The stream to hash</param>
+        /// <param name="Provider">The provider to hash with</param>
+        /// <param name="SigningCert">The certificate to sign the hash with</param>
+        /// <returns>A new Hash object</returns>
+        public static Hash Compute(Stream FromStream, HashProvider Provider, Cert SigningCert = null) {
+            if (!FromStream.CanRead || !FromStream.CanSeek) {
+                return null;
+            }
+
+            HashAlgorithm hashAlgo = Provider.GetHashAlgorithm();
+            var hash = new Hash(hashAlgo.ComputeHash(FromStream), Provider, FromStream.Length, DateTimeOffset.Now);
+
+            if (SigningCert != null && SigningCert.HasPrivateKey) {
+                hash.Sign(Provider, SigningCert);
+            }
+
+            return hash;
+        }
+
+        /// <summary>
         /// Computes a hash from a string
         /// </summary>
         /// <param name="FromString">The string to hash</param>
         /// <param name="Provider">The provider to hash with</param>
         /// <returns>A new Hash object</returns>
         public static Hash Compute(string FromString, HashProvider Provider) {
-            UnicodeEncoding UE = new UnicodeEncoding();
+            UTF8Encoding UE = new UTF8Encoding();
             return Compute(UE.GetBytes(FromString), Provider, default(Cert));
         }
+
+
 
         /// <summary>
         /// Computes a hash from a string
@@ -265,6 +351,18 @@ namespace CryptLink.SigningFramework {
             UnicodeEncoding UE = new UnicodeEncoding();
             return Compute(UE.GetBytes(FromString), Provider, SigningCert);
         }
+        
+        /// <summary>
+        /// Computes a hash from a string
+        /// </summary>
+        /// <param name="FromString">The string to hash</param>
+        /// <param name="Provider">The provider to hash with</param>
+        /// <returns>A new Hash object</returns>
+        public static Hash Compute(byte[] FromBytes, HashProvider Provider) {
+            UnicodeEncoding UE = new UnicodeEncoding();
+            return Compute(FromBytes, Provider, default(Cert));
+        }
+
 
         /// <summary>
         /// Computes the hash from a byte[] and sets the HashProvider

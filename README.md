@@ -12,15 +12,49 @@ Nuget package: [CryptLink.SigningFramework](https://www.nuget.org/packages/Crypt
 ## Examples
 The signing framework strives to make common cryptography related tasks simple and extensible. We believe good security should be as simple as as their concepts, and extensible to any object.
 
-### Simple Hashing Example
-Hashing any object that implements IHashable:
+### Simple Hashing Examples
+Hashing a string, byte[] or a Stream are just a one liner:
+
 ``` C#
-    var h1 = new HashableString("Test Value");
-    h1.ComputeHash(HashProvider.SHA256);
+//using CryptLink.SigningFramework;
+
+// Make some values to hash
+string stringToHash = "Easy!";
+byte[] bytesToHash = new byte[] { 0x45, 0x61, 0x73, 0x79, 0x21 };
+Stream streamToHash = new MemoryStream(new byte[] { 0x45, 0x61, 0x73, 0x79, 0x21 });
+File.WriteAllText("CryptLinkDemo.txt", "Easy!");
+Stream fileToHash = new FileStream("CryptLinkDemo.txt", FileMode.Open);
+
+// Using Extentions
+stringToHash.ComputeHash(HashProvider.SHA256);
+bytesToHash.ComputeHash(HashProvider.SHA256);
+streamToHash.ComputeHash(HashProvider.SHA256);
+fileToHash.ComputeHash(HashProvider.SHA256);
+
+// Using Hash static methods
+Hash.Compute(stringToHash, HashProvider.SHA256);
+Hash.Compute(bytesToHash, HashProvider.SHA256);
+Hash.Compute(streamToHash, HashProvider.SHA256);
+Hash.Compute(fileToHash, HashProvider.SHA256);
+```
+
+### Hashable Objects
+Hashable objects can hold a value and contain a hash
+
+``` C#
+// Instanced examples, the value and hash are held in a meta object
+// HashableString, holds the original string and the hash
+var hashableString = new HashableString("Easy!", HashProvider.SHA256);
+
+// HashableBytes, holds the original set of bytes and the hash - best for small arrays of bytes
+var hashableBytes = new HashableBytes(new byte[] { 0x45, 0x61, 0x73, 0x79, 0x21 }, HashProvider.SHA256);
+
+// HashableFile, holds a refernce to a local file path and the hash
+var hashableFile = new HashableFile("CryptLinkDemo.txt", HashProvider.SHA256);
 ```
 
 ### Custom Hashing Example
-Below is a full example that defines a new partially hashed object, and a program that uses it.
+Hashable objects can be complex and can hash specified properties automatically
 
 ``` C#
 using System;
@@ -72,13 +106,8 @@ using (X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine)
 ```
 
 ### Custom Hashing
-If the type you want to hash is not serializable, or want to serialize the binary data in a specific way, you can override `GetHashableData()`
+If the type you want to hash is not serializable, or want to serialize the binary data in a specific way implempt `IHashableBytes` or `IHashableStream` or abstract your class from `HashableBytesAbstract` or `HashableStreamAbstract`.
 
-``` C#
-public new byte[] GetHashableData() {
-	//Return the hashable bytes here
-}
-```
 
 ### Comparing byte[]
 Dotnet does not have a native way to compare the contents of two byte[] array contents, but the `ComparableBytes` does:

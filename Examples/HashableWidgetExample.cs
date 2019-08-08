@@ -10,7 +10,7 @@ namespace CryptLink.SigningFrameworkExamples
     /// A simple example of a hasable object
     /// </summary>
     [Serializable]
-    public class HashableWidgetExample : Hashable {
+    public class HashableWidgetExample : HashableBytesAbstract {
 
         [HashProperty]
         public int ID { get; set; }

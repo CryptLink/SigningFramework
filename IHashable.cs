@@ -6,11 +6,6 @@
     public interface IHashable {
 
         /// <summary>
-        /// A byte array of data to be hashed
-        /// </summary>
-        byte[] GetHashableData();
-
-        /// <summary>
         /// Gets the hash of this object using a specified provider, and signs it with a certificate (if provided)
         /// </summary>
         void ComputeHash(HashProvider Provider, Cert SigningCert);

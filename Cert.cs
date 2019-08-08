@@ -11,7 +11,7 @@ namespace CryptLink.SigningFramework {
     /// <summary>
     /// A wrapper for x509Certificate2 that provides easy signing, saving and loading
     /// </summary>
-    public class Cert : Hashable {
+    public class Cert : HashableBytesAbstract {
 
         /// <summary>
         /// The base 64 encoded bytes that comprise the certificate
