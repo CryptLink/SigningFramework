@@ -6,7 +6,7 @@ namespace CryptLink.SigningFramework {
     /// <summary>
     /// A immutable byte[] that can easily be hashed
     /// </summary>
-    public class HashableBytes : Hashable {
+    public class HashableBytes : HashableBytesAbstract {
 
         public HashableBytes() { }
 

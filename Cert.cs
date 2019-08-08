@@ -11,7 +11,7 @@ namespace CryptLink.SigningFramework {
     /// <summary>
     /// A wrapper for x509Certificate2 that provides easy signing, saving and loading
     /// </summary>
-    public class Cert : Hashable {
+    public class Cert : HashableBytesAbstract {
 
         /// <summary>
         /// The base 64 encoded bytes that comprise the certificate
@@ -38,22 +38,15 @@ namespace CryptLink.SigningFramework {
         /// </summary>
         public SecureString EncryptionPassword { private get; set; }
 
-        private X509Certificate2 _x509Certificate;
-        public X509Certificate2 GetX509Certificate() {
-            return _x509Certificate;
-        }
+        public X509Certificate2 X509Certificate { get; set; }
 
-        public void SetX509Certificate(X509Certificate2 _Cert) {
-            _x509Certificate = _Cert;
-        }
+        public string Thumbprint => X509Certificate.Thumbprint;
 
-        public string Thumbprint => GetX509Certificate().Thumbprint;
+        public PublicKey PublicKey => X509Certificate.PublicKey;
 
-        public PublicKey PublicKey => GetX509Certificate().PublicKey;
+        public bool HasPrivateKey => X509Certificate.HasPrivateKey;
 
-        public bool HasPrivateKey => GetX509Certificate().HasPrivateKey;
-
-        public int KeyLength => GetX509Certificate().PublicKey.Key.KeySize;
+        public int KeyLength => X509Certificate.PublicKey.Key.KeySize;
 
         /// <summary>
         /// For deserializing
@@ -61,14 +54,14 @@ namespace CryptLink.SigningFramework {
         public Cert() { }
 
         public Cert(X509Certificate2 Certificate) {
-            this.SetX509Certificate(Certificate);
+            this.X509Certificate = Certificate;
             Provider = Certificate.SignatureAlgorithm.GetCryptLinkHashProvider();
             ComputeHash(Provider);
             SeralizeCertificate();
         }
 
         public Cert(X509Certificate2 Certificate, SecureString EncryptionPassword) {
-            this.SetX509Certificate(Certificate);
+            this.X509Certificate = Certificate;
             this.EncryptionPassword = EncryptionPassword;
             this.PasswordEncrypt = true;
             Provider = Certificate.SignatureAlgorithm.GetCryptLinkHashProvider();
@@ -91,8 +84,8 @@ namespace CryptLink.SigningFramework {
         }
 
         public bool CheckCertificate() {
-            if (GetX509Certificate() == null) {
-                throw new NullReferenceException("Certificate is null, it should be set and have a valid decryption password");
+            if (X509Certificate == null) {
+                throw new NullReferenceException("The certificate does not exist, make sure it is accessible, the decryption password is correct");
             }
 
             return true;
@@ -117,7 +110,7 @@ namespace CryptLink.SigningFramework {
                     throw new Exception("No decryption password was specified, can't encrypt the certificate");
                 }
 
-                SetX509Certificate(new X509Certificate2(Utility.DecodeBytes(CertificateBase64), EncryptionPassword));
+                X509Certificate = new X509Certificate2(Utility.DecodeBytes(CertificateBase64), EncryptionPassword);
             }
 
             if (ProtectedStoragePath != null) {
@@ -125,7 +118,7 @@ namespace CryptLink.SigningFramework {
             }
 
             if (!PasswordEncrypt && ProtectedStoragePath == null) {
-                SetX509Certificate(new X509Certificate2(Utility.DecodeBytes(CertificateBase64)));
+                X509Certificate = new X509Certificate2(Utility.DecodeBytes(CertificateBase64));
             }
 
             ComputeHash(Provider);
@@ -156,7 +149,7 @@ namespace CryptLink.SigningFramework {
                     throw new Exception("No decryption password was specified, can't encrypt the certificate");
                 }
 
-                CertificateBase64 = Utility.EncodeBytes(GetX509Certificate().Export(X509ContentType.Pkcs12, EncryptionPassword));
+                CertificateBase64 = Utility.EncodeBytes(X509Certificate.Export(X509ContentType.Pkcs12, EncryptionPassword));
             }
 
             if (ProtectedStoragePath != null) {
@@ -164,7 +157,7 @@ namespace CryptLink.SigningFramework {
             }
 
             if (!PasswordEncrypt && ProtectedStoragePath == null) {
-                var exportBytes = GetX509Certificate().Export(X509ContentType.Pkcs12);
+                var exportBytes = X509Certificate.Export(X509ContentType.Pkcs12);
                 CertificateBase64 = Utility.EncodeBytes(exportBytes);
                 exportBytes = null;
             }
@@ -175,20 +168,20 @@ namespace CryptLink.SigningFramework {
         /// Re-parses an X509Certificate2 to only contain the public key
         /// </summary>
         public Cert RemovePrivateKey() {
-            if (GetX509Certificate() == null) {
+            if (X509Certificate == null) {
                 return null;
             } else {
-                return new Cert(new X509Certificate2(GetX509Certificate().RawData));
+                return new Cert(new X509Certificate2(X509Certificate.RawData));
             }
 
         }
 
         public override byte[] GetHashableData() {
-            if (GetX509Certificate() == null) {
+            if (X509Certificate == null) {
                 //possible improvement: get from web request
                 throw new NullReferenceException("Certificate not set");
             } else {
-                return GetX509Certificate().PublicKey.EncodedKeyValue.RawData;
+                return X509Certificate.PublicKey.EncodedKeyValue.RawData;
             }
         }
 
@@ -199,7 +192,7 @@ namespace CryptLink.SigningFramework {
         /// <param name="Provider">The provider to use</param>
         public bool VerifyHash(Hash Hash, HashProvider Provider) {
             using (var rsa = RSA.Create()) {
-                rsa.ImportParameters(GetX509Certificate().GetRSAPublicKey().ExportParameters(false));
+                rsa.ImportParameters(X509Certificate.GetRSAPublicKey().ExportParameters(false));
                 return rsa.VerifyData(Hash.Bytes, Hash.SignatureBytes, Provider.GetHashAlgorithmName(), RSASignaturePadding.Pkcs1);
             }
         }
