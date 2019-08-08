@@ -279,7 +279,7 @@ namespace CryptLink.SigningFramework {
         /// <param name="Provider">The provider to hash with</param>
         /// <returns>A new Hash object</returns>
         public static Hash Compute(Stream FromStream, HashProvider Provider) {
-            return Compute(FromStream, Provider, null);
+            return Compute(FromStream, Provider, default(Cert));
         }
 
         /// <summary>
