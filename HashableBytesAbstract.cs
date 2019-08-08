@@ -9,7 +9,7 @@ namespace CryptLink.SigningFramework {
     /// <summary>
     /// The abstract class that enables easy to use hashing and hashed based comparison
     /// </summary>
-    public abstract class Hashable : IHashable {
+    public abstract class HashableBytesAbstract : IHashableBytes {
 
         /// <summary>
         /// Default hashable data
@@ -42,10 +42,6 @@ namespace CryptLink.SigningFramework {
             ComputedHash = Hash.Compute(GetHashableData(), Provider, SigningCert);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public bool Verify() {
             string n = null;
             return ComputedHash.Verify(GetHashableData(), out n);

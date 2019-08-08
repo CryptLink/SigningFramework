@@ -60,7 +60,7 @@ namespace CryptLink.SigningFrameworkTests
         }
     }
 
-    public class TestHashableObject : Hashable {
+    public class TestHashableObject : HashableBytesAbstract {
         [HashProperty]
         public int IntHashed { get; set; } = 0b11110001001000000;
         public int IntUnhashed { get; set; } = 0b10011111101111110001;

@@ -6,7 +6,7 @@ namespace CryptLink.SigningFramework {
     /// <summary>
     /// A string that can easily be hashed
     /// </summary>
-    public class HashableString : Hashable {
+    public class HashableString : HashableBytesAbstract {
 
         public HashableString() { }
 
